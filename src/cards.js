@@ -1,3 +1,6 @@
+
+
+
 const initialCards = [
     {
       name: "Архыз",
