@@ -28,3 +28,43 @@ const removeCard = (event) => {
 initialCards.forEach((card) => {
   placesList.append(createCard(card, removeCard));
 });
+
+
+
+
+
+
+
+
+
+// // функция показа поп апа редактирования 
+const popupProfileEditEl = document.querySelector('.popup_type_edit');
+// const btnEditProfileEl = document.querySelector('.profile__edit-button');
+// btnEditProfileEl.addEventListener('click', () => {
+//   popupProfileEditEl.style.display = 'flex';
+// })
+
+
+// // функция показа поп апа создания новой карточки 
+const popupAddCardEl = document.querySelector('.popup_type_new-card');
+// const btnAddCardEl = document.querySelector('.profile__add-button');
+
+// btnAddCardEl.addEventListener('click', ()=> {
+//   popupAddCardEl.style.display = 'flex';
+// })
+
+
+document.querySelector('.profile').addEventListener('click', (event) => {
+  if(event.target.classList.contains('profile__add-button')) {
+    popupAddCardEl.style.display = 'flex';
+  } else if (event.target.classList.contains('profile__edit-button')) {
+    popupProfileEditEl.style.display = 'flex';
+  } 
+  return;
+})
+
+document.querySelectorAll('.popup__close').forEach(btn => {
+  btn.addEventListener('click', (event) => {
+    console.dir(event.target.closest('.popup').style.display = 'none')
+  })
+})
