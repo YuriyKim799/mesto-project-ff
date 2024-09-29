@@ -1,6 +1,6 @@
 import './js/cards.js';
 import './index.css';
-import { initialCards } from './cards.js';
+import { initialCards } from './js/cards.js';
 
 // @todo: Темплейт карточки
 const cardTemplate = document.querySelector('#card-template').content;
@@ -57,14 +57,36 @@ const popupAddCardEl = document.querySelector('.popup_type_new-card');
 document.querySelector('.profile').addEventListener('click', (event) => {
   if(event.target.classList.contains('profile__add-button')) {
     popupAddCardEl.style.display = 'flex';
+    addCloseEvent(popupAddCardEl);
   } else if (event.target.classList.contains('profile__edit-button')) {
     popupProfileEditEl.style.display = 'flex';
+    addCloseEvent(popupProfileEditEl);
   } 
-  return;
+ 
 })
 
-document.querySelectorAll('.popup__close').forEach(btn => {
-  btn.addEventListener('click', (event) => {
-    console.dir(event.target.closest('.popup').style.display = 'none')
-  })
-})
+function addCloseEvent(obj) {
+  obj.addEventListener('click', closePopup);
+  obj.addEventListener('keydown', closePopupEsc);
+}
+
+function closePopup(event) {
+    if(event.target.classList.contains('popup__close') 
+      || event.target.classList.contains('popup')) {
+     event.target.closest('.popup').style.display = 'none';
+    } 
+}
+
+function closePopupEsc(event) {
+  console.dir(event.key);
+   if (event.key == 'Escape') {
+    
+    event.target.closest('.popup').style.display = 'none';
+  }
+}
+
+// document.querySelectorAll('.popup__close').forEach(btn => {
+//   btn.addEventListener('click', (event) => {
+//     console.dir(event.target.closest('.popup').style.display = 'none')
+//   })
+// })
