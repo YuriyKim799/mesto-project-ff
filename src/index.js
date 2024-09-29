@@ -1,11 +1,6 @@
 import './js/cards.js';
 import './index.css';
-<<<<<<< HEAD
-import {initialCards} from './js/cards.js'
-
-=======
 import { initialCards } from './cards.js';
->>>>>>> 1cdba9137169918b4b7ea081ae31c5f78d15df3c
 
 // @todo: Темплейт карточки
 const cardTemplate = document.querySelector('#card-template').content;
