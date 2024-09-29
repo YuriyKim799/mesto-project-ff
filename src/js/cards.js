@@ -1,4 +1,7 @@
+<<<<<<< HEAD:src/js/cards.js
 
+=======
+>>>>>>> 1cdba9137169918b4b7ea081ae31c5f78d15df3c:src/cards.js
 export const initialCards = [
     {
       name: "Архыз",
