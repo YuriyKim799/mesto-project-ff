@@ -23,29 +23,31 @@ const createCard = (card, removeCard, likeCard, showImage) => {
 
 // @todo: Функция удаления карточки
 const removeCard = (event) => {
+ initialCards.forEach((el,idx)=> {
+ if (event.target.parentNode.querySelector('.card__image').alt === el.name) {
+  initialCards.splice(idx,1);
+ }
+})
   event.target.parentNode.remove();
 }
 
 // Функция лайка карточки 
-
 const likeCard = (event) => {
   event.target.classList.toggle('card__like-button_is-active');
 }
 
 //Функция показа изображения карточки
-
 const showImage = (event) => {
   const imagePopupEl = document.querySelector('.popup_type_image');
   const imageEl = imagePopupEl.querySelector('.popup__image');
   const imageDesc = imagePopupEl.querySelector('.popup__caption');
-  imagePopupEl.style.display = 'flex';
+  imagePopupEl.classList.toggle('popup_is-opened');
   imageEl.src = event.target.src;
   imageDesc.textContent = event.target.alt;
   addCloseEvent(imagePopupEl);
 }
 
 // @todo: Вывести карточки на страницу
-
 function renderCards(initialArr) {
   initialArr.forEach((card) => {
     placesList.append(createCard(card, removeCard, likeCard, showImage));
@@ -64,10 +66,11 @@ const pageEl = document.querySelector('.page');
 
 document.querySelector('.profile').addEventListener('click', (event) => {
   if(event.target.classList.contains('profile__add-button')) {
-    popupAddCardEl.style.display = 'flex';
+    // popupAddCardEl.style.display = 'flex';
+    popupAddCardEl.classList.toggle('popup_is-opened');
     addCloseEvent(popupAddCardEl);
   } else if (event.target.classList.contains('profile__edit-button')) {
-    popupProfileEditEl.style.display = 'flex';
+    popupProfileEditEl.classList.toggle('popup_is-opened');
     addCloseEvent(popupProfileEditEl);
   } 
 })
@@ -81,7 +84,7 @@ function closePopup(event) {
     if(event.target.classList.contains('popup__close') 
       || event.target.classList.contains('popup') 
     || event.target.classList.contains('popup__button')) {
-     event.target.closest('.popup').style.display = 'none';
+     event.target.closest('.popup').classList.toggle('popup_is-opened');
     } 
 }
 
