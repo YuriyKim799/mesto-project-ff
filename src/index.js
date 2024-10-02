@@ -1,6 +1,6 @@
 import './index.css';
 import { renderCards,initialCards } from './js/cards.js';
-import { closeModal, openModal, closeModalByEsc } from './js/modal.js';
+import { closeModal, openModal } from './js/modal.js';
 //Темплейт карточки
 export const cardTemplate = document.querySelector('#card-template').content;
 export const placesList = document.querySelector('.places__list');
