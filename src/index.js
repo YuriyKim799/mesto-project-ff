@@ -1,13 +1,9 @@
-import './js/cards.js';
 import './index.css';
-import { initialCards } from './js/cards.js';
-import { renderCards } from './js/renderCards.js';
-
-
+import { renderCards,initialCards } from './js/cards.js';
+import { closeModal, openModal, closeModalByEsc } from './js/modal.js';
 //Темплейт карточки
 export const cardTemplate = document.querySelector('#card-template').content;
 export const placesList = document.querySelector('.places__list');
-
 //DOM узлы
 export const pageEl = document.querySelector('.page');
 export const imagePopupEl = document.querySelector('.popup_type_image');
@@ -33,17 +29,9 @@ const cardImgUrlEl = cardsFormElement.querySelector('.popup__input_type_url');
 
 renderCards(initialCards)
 
-document.querySelector('.profile').addEventListener('click', (event) => {
-  // функция показа поп апа создания новой карточки 
-  if(event.target.classList.contains('profile__add-button')) {
-    popupAddCardEl.classList.toggle('popup_is-opened');
-    addCloseEvent(popupAddCardEl);
-  } else if (event.target.classList.contains('profile__edit-button')) {
-    // функция показа поп апа редактирования профиля
-    popupProfileEditEl.classList.toggle('popup_is-opened');
-    addCloseEvent(popupProfileEditEl);
-  } 
-})
+pageEl.addEventListener('click', openModal)
+pageEl.addEventListener('click', closeModal);
+
 
 // Обработчик «отправки» формы, хотя пока
 // она никуда отправляться не будет
