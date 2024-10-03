@@ -1,5 +1,6 @@
 import './index.css';
-import { renderCards,initialCards } from './js/cards.js';
+import { createCard, likeCard, removeCard } from './js/card.js';
+import { initialCards } from './js/cards.js';
 import { closeModal, openModal } from './js/modal.js';
 //Темплейт карточки
 export const cardTemplate = document.querySelector('#card-template').content;
@@ -64,38 +65,16 @@ popupEls.forEach(modal => {
   imageDesc.textContent = event.target.alt;
 }
 
-renderCards(initialCards,showImage)
-  // popupCloseEls.forEach( popup => {
-  //   popup.addEventListener('click', () => {
-  //     closeModal(popupOverlayEls)
-  //   })
-  // })
-
-  // popupOverlayEls.forEach(el => {
-  //   el.addEventListener('click', e => {
-  //     console.log(e.target);
-  //   })
-  // })
-
-// popupOverlayEl.addEventListener('click', ()=> {
-//   closeModal(popupOverlayEl)
-// });
-
-// popupCloseEl.addEventListener('click', ()=> {
-//   closeModal(popupOverlayEl)
-// });
-
-// popupBtnEl.addEventListener('click', ()=> {
-//   closeModal(popupOverlayEl)
-// });
-
-
-// pageEl.addEventListener('click', closeModal);
-
+//Выводим карточки на страницу
+function renderCards(initialArr, showImage) {
+  initialArr.forEach((card) => {
+    placesList.append(createCard(card, removeCard, likeCard, showImage));
+  });
+}
 
 // Обработчик «отправки» формы, хотя пока
 // она никуда отправляться не будет
-function handleFormSubmit(evt) {
+function editProfileForm(evt) {
     evt.preventDefault(); //Отменяем стандартную отправку формы.
     // Так мы можем определить свою логику отправки.
     // Получаем значение полей jobInput и nameInput из свойства value
@@ -103,29 +82,24 @@ function handleFormSubmit(evt) {
     // Вставляем новые значения с помощью textContent
     profileNameEl.textContent = nameInput.value;
     profileJobEl.textContent = jobInput.value;
+    closeModal(popupProfileEditEl);
 }
 // Прикрепляем обработчик к форме:
 // он будет следить за событием “submit” - «отправка»
-formElement.addEventListener('submit', handleFormSubmit); 
+formElement.addEventListener('submit', editProfileForm); 
 
 function addNewCard(event) {
   event.preventDefault();//Отменяем стандартную отправку формы.
-//Чтобы не дублировались карточки при добавлении, каждый раз удаляем их перед новым рендерингом
-  placesList.querySelectorAll('.card').forEach( el=>{
-      el.remove();
-  });
-//Вставляем новый созданный объект в начало массива карточек
-  initialCards.unshift({
-    name: cardNameEl.value,
+  placesList.prepend(createCard({name: cardNameEl.value,
     link: cardImgUrlEl.value,
-  })
+  }, removeCard, likeCard, showImage));
 //Очищаем поля инпутов
   cardNameEl.value = '';
   cardImgUrlEl.value = '';
-//Отображаем новый массив с добавленной карточкой в HTML
-  renderCards(initialCards)
+  closeModal(popupAddCardEl);
 }
 // Прикрепляем обработчик к форме:
 // он будет следить за событием “submit” - «отправка»
 cardsFormElement.addEventListener('submit', addNewCard);
 
+renderCards(initialCards,showImage);
