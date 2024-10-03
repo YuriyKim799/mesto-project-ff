@@ -48,7 +48,6 @@ function handleFormSubmit(evt) {
 // он будет следить за событием “submit” - «отправка»
 formElement.addEventListener('submit', handleFormSubmit); 
 
-
 function addNewCard(event) {
   event.preventDefault();//Отменяем стандартную отправку формы.
 //Чтобы не дублировались карточки при добавлении, каждый раз удаляем их перед новым рендерингом
