@@ -9,8 +9,10 @@ export const pageEl = document.querySelector('.page');
 export const imagePopupEl = document.querySelector('.popup_type_image');
 export const imageEl = imagePopupEl.querySelector('.popup__image');
 export const imageDesc = imagePopupEl.querySelector('.popup__caption');
-export const popupProfileEditEl = document.querySelector('.popup_type_edit');
-export const popupAddCardEl = document.querySelector('.popup_type_new-card');
+const popupProfileEditEl = document.querySelector('.popup_type_edit');
+const popupAddCardEl = document.querySelector('.popup_type_new-card');
+const profileEditBtnEl = document.querySelector('.profile__edit-button');
+const addCardBtnEl = document.querySelector('.profile__add-button');
 // Находим форму изменения профиля в DOM
 const formElement = document.querySelector('.edit-profile');
 // Находим поля формы в DOM
@@ -26,11 +28,69 @@ const cardsFormElement = document.querySelector('.new-place');
 // Находим поля формы в DOM
 const cardNameEl = cardsFormElement.querySelector('.popup__input_type_card-name');
 const cardImgUrlEl = cardsFormElement.querySelector('.popup__input_type_url');
+//Находим данные попапа для закрытия
+const popupEls = document.querySelectorAll('.popup');
+const popupCloseEls = document.querySelectorAll('.popup__close');
 
-renderCards(initialCards)
 
-pageEl.addEventListener('click', openModal)
-pageEl.addEventListener('click', closeModal);
+profileEditBtnEl.addEventListener('click', ()=> {
+  openModal(popupProfileEditEl);
+});
+
+addCardBtnEl.addEventListener('click', () => {
+  openModal(popupAddCardEl)}
+);
+
+popupCloseEls.forEach(element => {
+  element.addEventListener('click', (event)=> {
+    closeModal(event.target.closest('.popup'));
+  });
+});
+
+popupEls.forEach(modal => {
+  modal.addEventListener('click', event => {
+    if(!event.target.classList.contains('popup')) {
+      return;
+    };
+    closeModal(modal);
+  });
+});
+
+  //Функция показа изображения карточки
+ const showImage = (event) => {
+  openModal(imagePopupEl);
+  imageEl.src = event.target.src;
+  imageEl.alt = event.target.alt;
+  imageDesc.textContent = event.target.alt;
+}
+
+renderCards(initialCards,showImage)
+  // popupCloseEls.forEach( popup => {
+  //   popup.addEventListener('click', () => {
+  //     closeModal(popupOverlayEls)
+  //   })
+  // })
+
+  // popupOverlayEls.forEach(el => {
+  //   el.addEventListener('click', e => {
+  //     console.log(e.target);
+  //   })
+  // })
+
+// popupOverlayEl.addEventListener('click', ()=> {
+//   closeModal(popupOverlayEl)
+// });
+
+// popupCloseEl.addEventListener('click', ()=> {
+//   closeModal(popupOverlayEl)
+// });
+
+// popupBtnEl.addEventListener('click', ()=> {
+//   closeModal(popupOverlayEl)
+// });
+
+
+// pageEl.addEventListener('click', closeModal);
 
 
 // Обработчик «отправки» формы, хотя пока

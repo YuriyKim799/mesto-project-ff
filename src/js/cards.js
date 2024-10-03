@@ -1,5 +1,5 @@
 
-import {imagePopupEl, imageEl,imageDesc,placesList,cardTemplate} from '../index.js';
+import {placesList,cardTemplate} from '../index.js';
 
 export const initialCards = [
     {
@@ -40,13 +40,6 @@ export const initialCards = [
   return cardElement;
 }
 
-//Функция показа изображения карточки
-const showImage = (event) => {
-  imagePopupEl.classList.toggle('popup_is-opened');
-  imageEl.src = event.target.src;
-  imageDesc.textContent = event.target.alt;
-}
-
 // Функция лайка карточки 
  const likeCard = (event) => {
   event.target.classList.toggle('card__like-button_is-active');
@@ -63,7 +56,7 @@ const showImage = (event) => {
  }
 
 //Выводим карточки на страницу
-export function renderCards(initialArr) {
+export function renderCards(initialArr, showImage) {
   initialArr.forEach((card) => {
     placesList.append(createCard(card, removeCard, likeCard, showImage));
   });
