@@ -9,8 +9,7 @@ export function closeModal(element) {
 }
 
 function closeModalByEsc(event) {
-  const popupIsOpened = document.querySelector('.popup_is-opened');
   if (event.key === 'Escape') {
-    closeModal(popupIsOpened);
+    closeModal(document.querySelector('.popup_is-opened'));
   }
 }
