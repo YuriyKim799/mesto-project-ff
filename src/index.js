@@ -1,4 +1,5 @@
 import './index.css';
+import { enableValidation } from './js/validation.js';
 import { createCard, likeCard, removeCard } from './js/card.js';
 import { initialCards } from './js/cards.js';
 import { closeModal, openModal } from './js/modal.js';
@@ -15,7 +16,7 @@ const popupAddCardEl = document.querySelector('.popup_type_new-card');
 const profileEditBtnEl = document.querySelector('.profile__edit-button');
 const addCardBtnEl = document.querySelector('.profile__add-button');
 // Находим форму изменения профиля в DOM
-const formElement = document.querySelector('.edit-profile');
+export const formElement = document.forms['edit-profile'];
 // Находим поля формы в DOM
 const nameInput = formElement.querySelector('.popup__input_type_name');
 const jobInput = formElement.querySelector('.popup__input_type_description');
@@ -25,7 +26,7 @@ const profileJobEl = document.querySelector('.profile__description');
 nameInput.value = profileNameEl.textContent;
 jobInput.value = profileJobEl.textContent;
 // Находим форму добавления карточки в DOM
-const cardsFormElement = document.querySelector('.new-place');
+const cardsFormElement = document.forms['new-place'];
 // Находим поля формы в DOM
 const cardNameEl = cardsFormElement.querySelector('.popup__input_type_card-name');
 const cardImgUrlEl = cardsFormElement.querySelector('.popup__input_type_url');
@@ -103,3 +104,15 @@ function addNewCard(event) {
 cardsFormElement.addEventListener('submit', addNewCard);
 
 renderCards(initialCards,showImage);
+
+
+
+// Вызовем функцию
+enableValidation({
+  formSelector: '.popup__form',
+  inputSelector: '.popup__input',
+  submitButtonSelector: '.popup__button',
+  inactiveButtonClass: 'popup__button_disabled',
+  inputErrorClass: 'popup__input_type_error',
+  errorClass: 'popup__error_visible'
+}); 
