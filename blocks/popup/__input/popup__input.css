@@ -7,7 +7,7 @@
   line-height: 18px;
   box-sizing: border-box;
   padding: 10px 0 0;
-  /* margin-bottom: 10px; */
+  margin-bottom: 10px;
 }
 
 .popup__input:last-of-type {
@@ -18,6 +18,15 @@
   font-size: 12px;
   line-height: 14.52px;
   color: red;
+}
+
+.popup__input:focus-visible {
+  outline: 1px solid rgb(0, 132, 255);
+  box-shadow: 0px 0px 2px 3px rgba(0, 109, 255, 1);
+}
+
+.form__input_type_error {
+  border-bottom: 1px solid rgb(255, 0, 0);
 }
 
 @media screen and (max-width: 568px) {

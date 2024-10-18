@@ -52,6 +52,8 @@
               placeholder="Имя"
               minlength="2"
               maxlength="40"
+              pattern="^[a-zA-Zа-яА-ЯЁё \-]+$"
+              data-error="Разрешены только латинские, кириллические буквы, знаки дефиса и пробелы"
               required
             />
             <span class="name-input-error popup__input-error"></span>
@@ -63,6 +65,8 @@
               placeholder="Занятие"
               minlength="2"
               maxlength="200"
+              pattern="^[a-zA-Zа-яА-ЯЁё \-]+$"
+              data-error="Разрешены только латинские, кириллические буквы, знаки дефиса и пробелы"
               required
             />
             <span class="description-input-error popup__input-error"></span>
@@ -83,22 +87,28 @@
               name="place-name"
               id="place-name-input"
               class="popup__input popup__input_type_card-name"
+              minlength="2"
+              maxlength="30"
+              pattern="^[a-zA-Zа-яА-ЯЁё \-]+$"
+              data-error="Разрешены только латинские, кириллические буквы, знаки дефиса и пробелы"
               placeholder="Название"
               required
             />
             <span class="place-name-input-error popup__input-error"
-              >Вы пропустили это поле.</span
+              ></span
             >
             <input
               type="url"
               name="link"
               id="link-input"
               class="popup__input popup__input_type_url"
+              minlength="2"
+              data-error="Введите url картнки"
               placeholder="Ссылка на картинку"
               required
             />
             <span class="link-input-error popup__input-error"
-              >Вы пропустили это поле.</span
+              ></span
             >
             <button type="submit" class="button popup__button">
               Сохранить
