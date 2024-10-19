@@ -1,3 +1,5 @@
+const regexp = /^[a-zA-Zа-яА-ЯЁё \-]+$/;
+
 export const enableValidation = (optionsConfig) => {
   // Найдём все формы с указанным классом в DOM,
   // сделаем из них массив методом Array.from
@@ -28,27 +30,11 @@ const setEventListeners = (formElement, optionsConfig) => {
 }; 
 
 const isValid = (formElement, inputElement) => {
-
-  if (inputElement.validity.patternMismatch) {
-    inputElement.setCustomValidity(inputElement.dataset.error)
-  
-     showInputError(formElement, inputElement,inputElement.dataset.error);
-   }
-
-else if(!inputElement.validity.valid) {
-    // console.log(inputElement);
+ if(!inputElement.validity.valid) {
     showInputError(formElement, inputElement, inputElement.validationMessage);
-  } 
-  
-
-//  if (inputElement.validity.patternMismatch) {
-//   console.log(inputElement.validationMessage);
-//     // showInputError теперь получает параметром форму, в которой
-//     // находится проверяемое поле, и само это поле
-//     showInputError(formElement, inputElement, inputElement.validationMessage);
-    else {
-    // hideInputError теперь получает параметром форму, в которой
-    // находится проверяемое поле, и само это поле
+  } else if (!regexp.test(inputElement.value)) {
+    showInputError(formElement, inputElement, inputElement.dataset.error);
+  } else {
     hideInputError(formElement, inputElement);
   }
 }; 

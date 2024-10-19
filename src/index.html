@@ -52,7 +52,6 @@
               placeholder="Имя"
               minlength="2"
               maxlength="40"
-              pattern="^[a-zA-Zа-яА-ЯЁё \-]+$"
               data-error="Разрешены только латинские, кириллические буквы, знаки дефиса и пробелы"
               required
             />
@@ -65,7 +64,6 @@
               placeholder="Занятие"
               minlength="2"
               maxlength="200"
-              pattern="^[a-zA-Zа-яА-ЯЁё \-]+$"
               data-error="Разрешены только латинские, кириллические буквы, знаки дефиса и пробелы"
               required
             />
@@ -89,14 +87,11 @@
               class="popup__input popup__input_type_card-name"
               minlength="2"
               maxlength="30"
-              pattern="^[a-zA-Zа-яА-ЯЁё \-]+$"
               data-error="Разрешены только латинские, кириллические буквы, знаки дефиса и пробелы"
               placeholder="Название"
               required
             />
-            <span class="place-name-input-error popup__input-error"
-              ></span
-            >
+            <span class="place-name-input-error popup__input-error"></span>
             <input
               type="url"
               name="link"
@@ -107,9 +102,7 @@
               placeholder="Ссылка на картинку"
               required
             />
-            <span class="link-input-error popup__input-error"
-              ></span
-            >
+            <span class="link-input-error popup__input-error"></span>
             <button type="submit" class="button popup__button">
               Сохранить
             </button>
