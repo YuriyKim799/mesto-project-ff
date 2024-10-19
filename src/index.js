@@ -117,4 +117,4 @@ enableValidation({
   errorClass: 'popup__error_visible'
 }); 
 
-clearValidation()
+// clearValidation()

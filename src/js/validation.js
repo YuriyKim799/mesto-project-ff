@@ -1,5 +1,3 @@
-// const regexp = /[a-zа-ёя\-\s*]/igs;
-
 export const enableValidation = (optionsConfig) => {
   // Найдём все формы с указанным классом в DOM,
   // сделаем из них массив методом Array.from
@@ -31,13 +29,24 @@ const setEventListeners = (formElement, optionsConfig) => {
 
 const isValid = (formElement, inputElement) => {
 
- if (!inputElement.validity.valid) {
-    // showInputError теперь получает параметром форму, в которой
-    // находится проверяемое поле, и само это поле
+  if (inputElement.validity.patternMismatch) {
+    inputElement.setCustomValidity(inputElement.dataset.error)
+  
+     showInputError(formElement, inputElement,inputElement.dataset.error);
+   }
+
+else if(!inputElement.validity.valid) {
+    // console.log(inputElement);
     showInputError(formElement, inputElement, inputElement.validationMessage);
-  } else if(!regexp.test(inputElement.value)) {
-    showCustomInputError(formElement, inputElement);
-  } else {
+  } 
+  
+
+//  if (inputElement.validity.patternMismatch) {
+//   console.log(inputElement.validationMessage);
+//     // showInputError теперь получает параметром форму, в которой
+//     // находится проверяемое поле, и само это поле
+//     showInputError(formElement, inputElement, inputElement.validationMessage);
+    else {
     // hideInputError теперь получает параметром форму, в которой
     // находится проверяемое поле, и само это поле
     hideInputError(formElement, inputElement);
@@ -52,10 +61,6 @@ const showInputError = (formElement, inputElement, errorMessage) => {
   errorElement.textContent = errorMessage;
 }
 
-const showCustomInputError = (formElement, inputElement) => {
-  const errorElement = formElement.querySelector(`.${inputElement.id}-error`);
-  errorElement.textContent = inputElement.dataset.error;
-};
 
 const hideInputError = (formElement, inputElement) => {
   // Находим элемент ошибки
