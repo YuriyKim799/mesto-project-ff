@@ -1,5 +1,5 @@
 import './index.css';
-import { enableValidation } from './js/validation.js';
+import { enableValidation,clearValidation } from './js/validation.js';
 import { createCard, likeCard, removeCard } from './js/card.js';
 import { initialCards } from './js/cards.js';
 import { closeModal, openModal } from './js/modal.js';
@@ -16,10 +16,10 @@ const popupAddCardEl = document.querySelector('.popup_type_new-card');
 const profileEditBtnEl = document.querySelector('.profile__edit-button');
 const addCardBtnEl = document.querySelector('.profile__add-button');
 // Находим форму изменения профиля в DOM
-export const formElement = document.forms['edit-profile'];
+const formProfile = document.forms['edit-profile'];
 // Находим поля формы в DOM
-const nameInput = formElement.querySelector('.popup__input_type_name');
-const jobInput = formElement.querySelector('.popup__input_type_description');
+const nameInput = formProfile.querySelector('.popup__input_type_name');
+const jobInput = formProfile.querySelector('.popup__input_type_description');
 const profileNameEl = document.querySelector('.profile__title');
 const profileJobEl = document.querySelector('.profile__description');
 //При открытии редактирования профиля в полях формы стоит имеющееся значение 
@@ -34,14 +34,25 @@ const cardImgUrlEl = cardsFormElement.querySelector('.popup__input_type_url');
 const popupEls = document.querySelectorAll('.popup');
 const popupCloseEls = document.querySelectorAll('.popup__close');
 
+const validationConfig = {
+    formSelector: '.popup__form',
+    inputSelector: '.popup__input',
+    submitButtonSelector: '.popup__button',
+    inactiveButtonClass: 'popup__button_disabled',
+    inputErrorClass: 'popup__input_type_error',
+    errorClass: 'popup__error_visible'
+  };
+
 
 profileEditBtnEl.addEventListener('click', ()=> {
   openModal(popupProfileEditEl);
+  clearValidation(formProfile, validationConfig);
 });
 
 addCardBtnEl.addEventListener('click', () => {
-  openModal(popupAddCardEl)}
-);
+  openModal(popupAddCardEl);
+  clearValidation(cardsFormElement, validationConfig);
+});
 
 popupCloseEls.forEach(element => {
   element.addEventListener('click', (event)=> {
@@ -87,7 +98,7 @@ function editProfileForm(evt) {
 }
 // Прикрепляем обработчик к форме:
 // он будет следить за событием “submit” - «отправка»
-formElement.addEventListener('submit', editProfileForm); 
+formProfile.addEventListener('submit', editProfileForm); 
 
 function addNewCard(event) {
   event.preventDefault();//Отменяем стандартную отправку формы.
@@ -105,16 +116,5 @@ cardsFormElement.addEventListener('submit', addNewCard);
 
 renderCards(initialCards,showImage);
 
-
-
 // Вызовем функцию
-enableValidation({
-  formSelector: '.popup__form',
-  inputSelector: '.popup__input',
-  submitButtonSelector: '.popup__button',
-  inactiveButtonClass: 'popup__button_disabled',
-  inputErrorClass: 'popup__input_type_error',
-  errorClass: 'popup__error_visible'
-}); 
-
-clearValidation(profileForm, validationConfig); 
+enableValidation(validationConfig); 
