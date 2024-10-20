@@ -1,4 +1,5 @@
 const regexp = /^[a-zA-Zа-яА-ЯЁё \-]+$/;
+const urlPattern = /(?:https?):\/\/(\w+:?\w*)?(\S+)(:\d+)?(\/|\/([\w#!:.?+=&%!\-\/]))?/;
 
 export const enableValidation = (optionsConfig) => {
   // Найдём все формы с указанным классом в DOM,
@@ -33,13 +34,21 @@ const setEventListeners = (formElement, optionsConfig) => {
 }; 
 
 const isValid = (formElement, inputElement) => {
-    if (!inputElement.validity.valid) {
-      showInputError(formElement, inputElement, inputElement.validationMessage);
-    } else if (!regexp.test(inputElement.value)) {
-      showInputError(formElement, inputElement, inputElement.dataset.error);
+    if (inputElement.type === 'url') {
+      if (!urlPattern.test(inputElement.value)) {
+        showInputError(formElement, inputElement, inputElement.validationMessage);
+      }else {
+        hideInputError(formElement, inputElement);
+      }
     } else {
-      hideInputError(formElement, inputElement);
-    }
+      if (!inputElement.validity.valid) {
+        showInputError(formElement, inputElement, inputElement.validationMessage);
+      } else if (!regexp.test(inputElement.value)) {
+        showInputError(formElement, inputElement, inputElement.dataset.error);
+      } else {
+        hideInputError(formElement, inputElement);
+      }
+    } 
 }; 
 
 const showInputError = (formElement, inputElement, errorMessage) => {
@@ -61,12 +70,14 @@ const hideInputError = (formElement, inputElement) => {
 // Функция принимает массив полей ввода
 // и элемент кнопки, состояние которой нужно менять
 const toggleButtonState = (inputList, buttonElement) => {
+  
   // Если есть хотя бы один невалидный инпут
   if (hasInvalidInput(inputList)) {
     // сделай кнопку неактивной
         buttonElement.disabled = true;
         buttonElement.classList.add('form__submit_inactive');
   } else {
+
         // иначе сделай кнопку активной
         buttonElement.disabled = false;
         buttonElement.classList.remove('form__submit_inactive');
@@ -75,18 +86,18 @@ const toggleButtonState = (inputList, buttonElement) => {
 
 // // Функция принимает массив полей
 const hasInvalidInput = (inputList) => {
-  // проходим по этому массиву методом some
+      // проходим по этому массиву методом some
   return inputList.some((inputElement) => {
-        // Если поле не валидно, колбэк вернёт true
-    // Обход массива прекратится и вся функция
-    // hasInvalidInput вернёт true
-    return !inputElement.validity.valid || !regexp.test(inputElement.value);
-  })
+    // Если поле не валидно, колбэк вернёт true
+// Обход массива прекратится и вся функция
+// hasInvalidInput вернёт true
+return !inputElement.validity.valid || !regexp.test(inputElement.value) && !urlPattern.test(inputElement.value);
+})
 }; 
 
 export function clearValidation(formElement,validationConfig) {
   formElement.querySelectorAll(validationConfig.inputSelector).forEach(inputEl => {
-    if (inputEl.validity.valid) {
+    if (inputEl.validity.valid || !urlPattern.test(inputEl.value)) {
       hideInputError(formElement, inputEl);
     }
   });
