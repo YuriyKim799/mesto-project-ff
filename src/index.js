@@ -22,6 +22,7 @@ const nameInput = formProfile.querySelector('.popup__input_type_name');
 const jobInput = formProfile.querySelector('.popup__input_type_description');
 const profileNameEl = document.querySelector('.profile__title');
 const profileJobEl = document.querySelector('.profile__description');
+const profileImgEl = document.querySelector('.profile__image');
 //При открытии редактирования профиля в полях формы стоит имеющееся значение 
 nameInput.value = profileNameEl.textContent;
 jobInput.value = profileJobEl.textContent;
@@ -42,7 +43,6 @@ const validationConfig = {
     inputErrorClass: 'popup__input_type_error',
     errorClass: 'popup__error_visible'
   };
-
 
 profileEditBtnEl.addEventListener('click', ()=> {
   openModal(popupProfileEditEl);
@@ -78,11 +78,7 @@ popupEls.forEach(modal => {
 }
 
 //Выводим карточки на страницу
-function renderCards(initialArr, showImage) {
-  initialArr.forEach((card) => {
-    placesList.append(createCard(card, removeCard, likeCard, showImage));
-  });
-}
+
 
 // Обработчик «отправки» формы, хотя пока
 // она никуда отправляться не будет
@@ -102,9 +98,16 @@ formProfile.addEventListener('submit', editProfileForm);
 
 function addNewCard(event) {
   event.preventDefault();//Отменяем стандартную отправку формы.
-  placesList.prepend(createCard({name: cardNameEl.value,
+
+  const btnRemoveEl =  document.createElement('BUTTON');
+  btnRemoveEl.classList.add('card__delete-button');
+
+  placesList.prepend(createCard({
+    name: cardNameEl.value,
     link: cardImgUrlEl.value,
-  }, removeCard, likeCard, showImage));
+    myOwnId: 'My card',
+  }, 
+  removeCard, likeCard, showImage, btnRemoveEl));
 //Очищаем поля инпутов
   cardNameEl.value = '';
   cardImgUrlEl.value = '';
@@ -114,7 +117,43 @@ function addNewCard(event) {
 // он будет следить за событием “submit” - «отправка»
 cardsFormElement.addEventListener('submit', addNewCard);
 
-renderCards(initialCards,showImage);
+
 
 // Вызовем функцию
 enableValidation(validationConfig); 
+
+const getCards = () => {
+  return fetch('https://nomoreparties.co/v1/wff-cohort-25/cards', {
+    headers: {
+      authorization: '56a37d53-5082-4948-be21-caf728509b19'
+    }
+  });
+}
+
+// console.log(getCards());
+function renderCards(initialArr, showImage) {
+  initialArr.forEach((card) => {
+    placesList.append(createCard(card, removeCard, likeCard, showImage));
+  });
+}
+
+const getUser = () => {
+  return fetch('https://nomoreparties.co/v1/wff-cohort-25/users/me', {
+    headers: {
+      method: 'GET',
+      authorization: '56a37d53-5082-4948-be21-caf728509b19',
+    }
+  });
+}
+
+
+
+Promise.all([getCards(),getUser()]).then((resp) => {
+  resp.forEach(elem => {
+    console.log(elem.json().then(res => console.log(res)));
+  })
+});
+
+// profileNameEl.textContent = res.name;
+// profileJobEl.textContent = res.about;
+// profileImgEl.style.backgroundImage = `url(${res.avatar})`

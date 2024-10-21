@@ -1,12 +1,17 @@
 import {cardTemplate} from '../index.js';
 
 //Функция создания карточки
-export const createCard = (card, removeCard, likeCard, showImage) => {
+export const createCard = (card, removeCard, likeCard, showImage, btnRemoveEl) => {
   const cardElement = cardTemplate.querySelector('.card').cloneNode(true);
   const cardImgEl =  cardElement.querySelector('.card__image');
-  cardElement.querySelector('.card__delete-button').addEventListener('click', ()=>{
-    removeCard(cardElement);
-  });
+
+  if(card.myOwnId === 'My card') {
+  cardImgEl.insertAdjacentElement('afterend', btnRemoveEl);
+    btnRemoveEl.addEventListener('click', ()=>{
+      removeCard(cardElement);
+    });
+  }  
+
   cardElement.querySelector('.card__like-button').addEventListener('click', likeCard);
   cardImgEl.addEventListener('click', showImage);
   cardImgEl.src = card.link;

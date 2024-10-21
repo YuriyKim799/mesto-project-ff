@@ -5,7 +5,6 @@ export const enableValidation = (optionsConfig) => {
   // Найдём все формы с указанным классом в DOM,
   // сделаем из них массив методом Array.from
   const formList = Array.from(document.querySelectorAll(optionsConfig.formSelector));
-
   // Переберём полученную коллекцию
   formList.forEach((formElement) => {
     // Для каждой формы вызовем функцию setEventListeners,
@@ -70,7 +69,6 @@ const hideInputError = (formElement, inputElement) => {
 // Функция принимает массив полей ввода
 // и элемент кнопки, состояние которой нужно менять
 const toggleButtonState = (inputList, buttonElement) => {
-  
   // Если есть хотя бы один невалидный инпут
   if (hasInvalidInput(inputList)) {
     // сделай кнопку неактивной
@@ -96,9 +94,16 @@ return !inputElement.validity.valid || !regexp.test(inputElement.value) && !urlP
 }; 
 
 export function clearValidation(formElement,validationConfig) {
-  formElement.querySelectorAll(validationConfig.inputSelector).forEach(inputEl => {
-    if (inputEl.validity.valid || !urlPattern.test(inputEl.value)) {
+  const btnEl = formElement.querySelector(validationConfig.submitButtonSelector);
+  const inputList = formElement.querySelectorAll(validationConfig.inputSelector);
+  inputList.forEach(inputEl => {
+    if (!inputEl.validity.valid || !urlPattern.test(inputEl.value)) {
       hideInputError(formElement, inputEl);
     }
+    if (inputEl.value === "") {
+      btnEl.disabled = true;
+      btnEl.classList.add('form__submit_inactive');
+    }
   });
+  
 }
