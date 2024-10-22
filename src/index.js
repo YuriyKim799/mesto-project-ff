@@ -77,24 +77,32 @@ popupEls.forEach(modal => {
   imageDesc.textContent = event.target.alt;
 }
 
-//Выводим карточки на страницу
-
-
 // Обработчик «отправки» формы, хотя пока
 // она никуда отправляться не будет
 function editProfileForm(evt) {
     evt.preventDefault(); //Отменяем стандартную отправку формы.
     // Так мы можем определить свою логику отправки.
-    // Получаем значение полей jobInput и nameInput из свойства value
-    // Выбираем элементы, куда должны быть вставлены значения полей
-    // Вставляем новые значения с помощью textContent
-    profileNameEl.textContent = nameInput.value;
-    profileJobEl.textContent = jobInput.value;
+    // Делаем запрос к серверу  
+    fetch('https://nomoreparties.co/v1/wff-cohort-25/users/me', {
+      method: 'PATCH',
+      headers: {
+        authorization: '56a37d53-5082-4948-be21-caf728509b19',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        name: nameInput.value,
+        about: jobInput.value
+      })
+    }).then(result => result.json()).then(res => insertUserData(res)).catch(res => insertUserData({
+      name: 'Юрий',
+      about: 'Сотрудник года',
+    })); // получили ответ и полученный 
+    // ответ передали в колбэк функцию рендеринга профиля на странице
     closeModal(popupProfileEditEl);
 }
 // Прикрепляем обработчик к форме:
 // он будет следить за событием “submit” - «отправка»
-formProfile.addEventListener('submit', editProfileForm); 
+formProfile.addEventListener('submit',editProfileForm); 
 
 function addNewCard(event) {
   event.preventDefault();//Отменяем стандартную отправку формы.
@@ -102,12 +110,10 @@ function addNewCard(event) {
   const btnRemoveEl =  document.createElement('BUTTON');
   btnRemoveEl.classList.add('card__delete-button');
 
-
-
   placesList.prepend(createCard({
     name: cardNameEl.value,
     link: cardImgUrlEl.value,
-    myOwnId: 'My card',
+    _id: '671800697a34af05a7d5c9d4',
   }, 
   removeCard, likeCard, showImage, btnRemoveEl));
 //Очищаем поля инпутов
@@ -118,27 +124,36 @@ function addNewCard(event) {
 // Прикрепляем обработчик к форме:
 // он будет следить за событием “submit” - «отправка»
 // cardsFormElement.addEventListener('submit', addNewCard);
-cardsFormElement.addEventListener('submit', sendCardToServer, sendRequestData);
 
-const sendCardToServer = () => {
-  let cardData = {
+
+const sendCardToServer = (evt) => {
+  evt.preventDefault();
+
+  let cardInfo = {
     name: cardNameEl.value,
     link: cardImgUrlEl.value,
   }
 
    fetch('https://nomoreparties.co/v1/wff-cohort-25/cards', {
+    method: 'POST',
     headers: {
-      method: 'POST',
       authorization: '56a37d53-5082-4948-be21-caf728509b19',
-       'Content-Type': 'application/json;charset=utf-8',
+       'Content-Type': 'application/json',
     },
-    body: JSON.stringify(cardData),
-  });
+    body: JSON.stringify(cardInfo),
+  }).then(res => {
+    if(res.ok) {
+      return res.json();
+    } else {
+      return Promise.reject(res.status);
+    }
+  }).then(res => renderCards(res)).catch(err => {console.log(`Ошибка такая ${err}`)});
 }
 
-
+cardsFormElement.addEventListener('submit', sendCardToServer);
 // Вызовем функцию
 enableValidation(validationConfig); 
+
 const getCards = () => {
   return fetch('https://nomoreparties.co/v1/wff-cohort-25/cards', {
     headers: {
@@ -156,8 +171,8 @@ function renderCards(initialArr, showImage) {
 
 const getUser = () => {
   return fetch('https://nomoreparties.co/v1/wff-cohort-25/users/me', {
+    method: 'GET',
     headers: {
-      method: 'GET',
       authorization: '56a37d53-5082-4948-be21-caf728509b19',
     }
   });

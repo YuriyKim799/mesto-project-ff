@@ -5,12 +5,12 @@ export const createCard = (card, removeCard, likeCard, showImage, btnRemoveEl) =
   const cardElement = cardTemplate.querySelector('.card').cloneNode(true);
   const cardImgEl =  cardElement.querySelector('.card__image');
 
-  if(card.myOwnId === 'My card') {
-  cardImgEl.insertAdjacentElement('afterend', btnRemoveEl);
-    btnRemoveEl.addEventListener('click', ()=>{
-      removeCard(cardElement);
-    });
-  }  
+  // if(card['_id'] === '671800697a34af05a7d5c9d4') {
+  // cardImgEl.insertAdjacentElement('afterend', btnRemoveEl);
+  //   btnRemoveEl.addEventListener('click', ()=>{
+  //     removeCard(cardElement);
+  //   });
+  // }  
 
   cardElement.querySelector('.card__like-button').addEventListener('click', likeCard);
   cardImgEl.addEventListener('click', showImage);
