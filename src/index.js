@@ -102,6 +102,8 @@ function addNewCard(event) {
   const btnRemoveEl =  document.createElement('BUTTON');
   btnRemoveEl.classList.add('card__delete-button');
 
+
+
   placesList.prepend(createCard({
     name: cardNameEl.value,
     link: cardImgUrlEl.value,
@@ -115,13 +117,28 @@ function addNewCard(event) {
 }
 // Прикрепляем обработчик к форме:
 // он будет следить за событием “submit” - «отправка»
-cardsFormElement.addEventListener('submit', addNewCard);
+// cardsFormElement.addEventListener('submit', addNewCard);
+cardsFormElement.addEventListener('submit', sendCardToServer, sendRequestData);
 
+const sendCardToServer = () => {
+  let cardData = {
+    name: cardNameEl.value,
+    link: cardImgUrlEl.value,
+  }
+
+   fetch('https://nomoreparties.co/v1/wff-cohort-25/cards', {
+    headers: {
+      method: 'POST',
+      authorization: '56a37d53-5082-4948-be21-caf728509b19',
+       'Content-Type': 'application/json;charset=utf-8',
+    },
+    body: JSON.stringify(cardData),
+  });
+}
 
 
 // Вызовем функцию
 enableValidation(validationConfig); 
-
 const getCards = () => {
   return fetch('https://nomoreparties.co/v1/wff-cohort-25/cards', {
     headers: {
@@ -146,14 +163,22 @@ const getUser = () => {
   });
 }
 
+function sendRequestData () {
+  Promise.all([getUser(),getCards()]).then((resp) => {
+    const [user, cards] = resp;
+    user.json().then(userData => {
+     insertUserData(userData);
+      });
+    cards.json().then(cardsData => {
+     renderCards(cardsData, showImage)
+      })
+    });
+}
 
+sendRequestData();
 
-Promise.all([getCards(),getUser()]).then((resp) => {
-  resp.forEach(elem => {
-    console.log(elem.json().then(res => console.log(res)));
-  })
-});
-
-// profileNameEl.textContent = res.name;
-// profileJobEl.textContent = res.about;
-// profileImgEl.style.backgroundImage = `url(${res.avatar})`
+function insertUserData(user) {
+  profileNameEl.textContent = user.name;
+  profileJobEl.textContent = user.about;
+  profileImgEl.style.backgroundImage = `url(${user.avatar})`
+}
