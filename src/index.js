@@ -1,7 +1,7 @@
 import './index.css';
 import { enableValidation,clearValidation } from './js/validation.js';
 import { createCard, likeCard, removeCard } from './js/card.js';
-import { initialCards } from './js/cards.js';
+// import { initialCards } from './js/cards.js';
 import { closeModal, openModal } from './js/modal.js';
 //Темплейт карточки
 export const cardTemplate = document.querySelector('#card-template').content;
@@ -93,10 +93,18 @@ function editProfileForm(evt) {
         name: nameInput.value,
         about: jobInput.value
       })
-    }).then(result => result.json()).then(res => insertUserData(res)).catch(res => insertUserData({
-      name: 'Юрий',
-      about: 'Сотрудник года',
-    })); // получили ответ и полученный 
+    }).then(res => {
+      if(res.ok) {
+        return res.json();
+      } else {
+        return Promise.reject(res.status);
+      }
+    }).then(res => insertUserData(res)).catch(error => {
+      insertUserData({
+        name: 'Юрий',
+        about: 'Сотрудник года',
+      }), console.log(`Ошибка такая ${error}, вставили значения по умолчанию`)
+    }); // получили ответ и полученный 
     // ответ передали в колбэк функцию рендеринга профиля на странице
     closeModal(popupProfileEditEl);
 }
@@ -104,36 +112,18 @@ function editProfileForm(evt) {
 // он будет следить за событием “submit” - «отправка»
 formProfile.addEventListener('submit',editProfileForm); 
 
-function addNewCard(event) {
-  event.preventDefault();//Отменяем стандартную отправку формы.
-
-  const btnRemoveEl =  document.createElement('BUTTON');
-  btnRemoveEl.classList.add('card__delete-button');
-
-  placesList.prepend(createCard({
-    name: cardNameEl.value,
-    link: cardImgUrlEl.value,
-    _id: '671800697a34af05a7d5c9d4',
-  }, 
-  removeCard, likeCard, showImage, btnRemoveEl));
-//Очищаем поля инпутов
-  cardNameEl.value = '';
-  cardImgUrlEl.value = '';
-  closeModal(popupAddCardEl);
+function addNewCard(cardObj) {
+  placesList.prepend(createCard(cardObj, 
+  removeCard, likeCard, showImage));
+  clearValidation(cardsFormElement, validationConfig);
 }
-// Прикрепляем обработчик к форме:
-// он будет следить за событием “submit” - «отправка»
-// cardsFormElement.addEventListener('submit', addNewCard);
-
 
 const sendCardToServer = (evt) => {
   evt.preventDefault();
-
   let cardInfo = {
     name: cardNameEl.value,
     link: cardImgUrlEl.value,
   }
-
    fetch('https://nomoreparties.co/v1/wff-cohort-25/cards', {
     method: 'POST',
     headers: {
@@ -147,7 +137,9 @@ const sendCardToServer = (evt) => {
     } else {
       return Promise.reject(res.status);
     }
-  }).then(res => renderCards(res)).catch(err => {console.log(`Ошибка такая ${err}`)});
+  }).then(res => {addNewCard(res)}).catch(err => {console.log(`Ошибка такая ${err}`)});
+
+  closeModal(popupAddCardEl);
 }
 
 cardsFormElement.addEventListener('submit', sendCardToServer);
