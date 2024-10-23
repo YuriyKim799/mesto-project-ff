@@ -16,7 +16,7 @@ export const createCard = (card, removeCard, likeCard, showImage) => {
   }  
 
   cardElement.querySelector('.card__like-button').addEventListener('click', (e) => {
-    likeCard(e, card);
+    likeCard(e, card, card.owner);
   });
 
   cardImgEl.addEventListener('click', showImage);
@@ -27,21 +27,40 @@ export const createCard = (card, removeCard, likeCard, showImage) => {
 }
 
 // Функция лайка карточки 
-export const likeCard = (event, card) => {
+export const likeCard = (event, card, cardOwner) => {
   event.target.classList.toggle('card__like-button_is-active');
 
-  console.log(card);
+  // console.log(card);
 
-  // fetch(`https://nomoreparties.co/v1/wff-cohort-25/cards/${card._id}`, {
-  //   method: 'DELETE',
-  //   headers: {
-  //     authorization: '56a37d53-5082-4948-be21-caf728509b19',
-  //     "Content-type": "application/json; charset=utf-8"
-  //   }
-  // }).then( res => res.json()).then(res => console.log(res));
+  fetch(`https://nomoreparties.co/v1/wff-cohort-25/cards/`, {
+    // method: 'PATCH',
+    headers: {
+      authorization: '56a37d53-5082-4948-be21-caf728509b19',
+      "Content-type": "application/json; charset=utf-8"
+    },
+    // body: JSON.stringify({
+    //   likes:[card.owner]
+    // })
+  }).then( res => {
+    if(res.ok) {
+      return res.json();
+    } else {
+      return Promise.reject(res.status);
+    }
+  })
+  .then(res => pushLike(res,card,cardOwner)).catch(err => {
+    console.log(`Ошибка такая ${err}`)
+  });
+}
 
-  
-
+function pushLike(arrCards,mainCard,cardOwner) {
+  console.log(mainCard);
+  console.log(Array.from(arrCards).forEach(card => {
+    if(card._id === mainCard._id) {
+      card.likes.push(cardOwner);
+      console.log(card);
+    }
+  }));
 }
 
 //Функция удаления карточки
@@ -53,5 +72,18 @@ export const removeCard = (cardElement, card) => {
       authorization: '56a37d53-5082-4948-be21-caf728509b19',
       "Content-type": "application/json; charset=utf-8"
     }
-  });
+  }).then( res => {
+       if(res.ok) {
+         return res.json();
+       } else {
+         return Promise.reject(res.status);
+       }
+     })
+     .then(res => console.log(res)).catch(err => {
+       console.log(`Ошибка такая ${err}`)
+     });
  }
+
+
+
+ // в лайк карточки в массив должен прилетать я а именно результат запроса getUser 

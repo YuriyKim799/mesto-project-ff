@@ -81,7 +81,6 @@ popupEls.forEach(modal => {
 // она никуда отправляться не будет
 function editProfileForm(evt) {
     evt.preventDefault(); //Отменяем стандартную отправку формы.
-    // Так мы можем определить свою логику отправки.
     // Делаем запрос к серверу  
     fetch('https://nomoreparties.co/v1/wff-cohort-25/users/me', {
       method: 'PATCH',
@@ -115,7 +114,6 @@ formProfile.addEventListener('submit',editProfileForm);
 function addNewCard(cardObj) {
   placesList.prepend(createCard(cardObj, 
   removeCard, likeCard, showImage));
-  clearValidation(cardsFormElement, validationConfig);
 }
 
 const sendCardToServer = (evt) => {
@@ -138,7 +136,8 @@ const sendCardToServer = (evt) => {
       return Promise.reject(res.status);
     }
   }).then(res => {addNewCard(res)}).catch(err => {console.log(`Ошибка такая ${err}`)});
-
+  cardNameEl.value = '',
+  cardImgUrlEl.value = '',
   closeModal(popupAddCardEl);
 }
 
@@ -154,7 +153,6 @@ const getCards = () => {
   });
 }
 
-// console.log(getCards());
 function renderCards(initialArr, showImage) {
   initialArr.forEach((card) => {
     placesList.append(createCard(card, removeCard, likeCard, showImage));
