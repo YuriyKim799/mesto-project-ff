@@ -74,7 +74,6 @@ export const likeCard = (event, targetCard, cardCountEl) => {
       console.log(`Ошибка такая ${err}`)
     });
   }
-
 }
 
 function updateCardLikes(card, cardCountEl) {
@@ -102,7 +101,3 @@ export const removeCard = (cardElement, card) => {
        console.log(`Ошибка такая ${err}`)
      });
  }
-
-
-
- // в лайк карточки в массив должен прилетать я а именно результат запроса getUser 
