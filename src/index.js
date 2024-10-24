@@ -153,9 +153,10 @@ const getCards = () => {
   });
 }
 
-function renderCards(initialArr, showImage) {
+function renderCards(initialArr, showImage, accOwner) {
   initialArr.forEach((card) => {
-    placesList.append(createCard(card, removeCard, likeCard, showImage));
+    console.log(card);
+    placesList.append(createCard(card, removeCard, likeCard, showImage, accOwner));
   });
 }
 
@@ -168,19 +169,20 @@ const getUser = () => {
   });
 }
 
-function sendRequestData () {
+// function sendRequestData () {
   Promise.all([getUser(),getCards()]).then((resp) => {
     const [user, cards] = resp;
+   
     user.json().then(userData => {
      insertUserData(userData);
       });
     cards.json().then(cardsData => {
-     renderCards(cardsData, showImage)
-      })
+    renderCards(cardsData, showImage)
+      });
     });
-}
+// }
 
-sendRequestData();
+// sendRequestData();
 
 function insertUserData(user) {
   profileNameEl.textContent = user.name;

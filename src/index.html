@@ -21,6 +21,9 @@
       <main class="content">
         <section class="profile page__section">
           <div class="profile__image"></div>
+          <button class="profile__image-edit">
+            <img src="<%=require('/images/vector.svg')%>" alt="edit-photo">
+          </button>
           <div class="profile__info">
             <h1 class="profile__title"></h1>
             <button class="profile__edit-button" type="button"></button>
@@ -97,6 +100,28 @@
               required
             />
             <span class="link-input-error popup__input-error"></span>
+            <button type="submit" class="button popup__button">
+              Сохранить
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <div class="popup popup_type_edit-image-profile">
+        <div class="popup__content">
+          <button type="button" class="popup__close"></button>
+          <h3 class="popup__title">Обновить аватар</h3>
+          <form class="popup__form edit-image" name="edit-image" novalidate>
+            <input
+              type="url"
+              name="image-edit"
+              id="image-edit-input"
+              class="popup__input popup__input_type_url"
+              data-error="Разрешены только латинские, кириллические буквы, знаки дефиса и пробелы"
+              placeholder="Название"
+              required
+            />
+            <span class="image-edit-input-error popup__input-error"></span>
             <button type="submit" class="button popup__button">
               Сохранить
             </button>
