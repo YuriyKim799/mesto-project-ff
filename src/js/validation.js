@@ -33,7 +33,13 @@ const setEventListeners = (formElement, optionsConfig) => {
 }; 
 
 const isValid = (formElement, inputElement) => {
-    if (inputElement.type === 'url') {
+    if(inputElement.name === 'image-edit') {
+      fetch(inputElement.value, {
+        method: 'HEAD',
+      }).then(res => console.log(res.headers.get('content-type')));
+    }   
+  
+    if (inputElement.name === 'link') {
       if (!urlPattern.test(inputElement.value)) {
         showInputError(formElement, inputElement, inputElement.validationMessage);
       }else {
