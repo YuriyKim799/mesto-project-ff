@@ -113,6 +113,7 @@ function changeAvatar(evt) {
     }), console.log(`Ошибка такая ${error}, вставили значения по умолчанию`)
   }); // получили ответ и полученный 
   // ответ передали в колбэк функцию рендеринга профиля на странице
+  imageEditInput.value = '';
   closeModal(popupProfileImageEditEl);
 } 
 
@@ -230,3 +231,15 @@ function insertUserData(user) {
   profileJobEl.textContent = user.about;
   profileImgEl.style.backgroundImage = `url(${user.avatar})`
 }
+
+// let time;
+// imageEditInput.addEventListener('input', (event) => {
+//   clearTimeout(time);
+//   time = setTimeout(checkInputlink, 1300)
+// })
+
+// function checkInputlink() {
+//   fetch(imageEditInput.value, {
+//         method: 'HEAD',
+//       }).then(res => console.log(res.headers.get('content-type')));
+// }

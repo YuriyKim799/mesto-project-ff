@@ -36,12 +36,15 @@ const isValid = (formElement, inputElement) => {
     if(inputElement.name === 'image-edit') {
       fetch(inputElement.value, {
         method: 'HEAD',
+        headers: {
+          "Content-type": "application/json; charset=UTF-8",
+       },
       }).then(res => console.log(res.headers.get('content-type')));
     }   
   
-    if (inputElement.name === 'link') {
+    if (inputElement.type === 'url') {
       if (!urlPattern.test(inputElement.value)) {
-        showInputError(formElement, inputElement, inputElement.validationMessage);
+        showInputError(formElement, inputElement, inputElement.dataset.error);
       }else {
         hideInputError(formElement, inputElement);
       }
