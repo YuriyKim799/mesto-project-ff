@@ -239,7 +239,12 @@ function insertUserData(user) {
 // })
 
 // function checkInputlink() {
-//   fetch(imageEditInput.value, {
+//   console.log(inputElement.value);
+//   fetch(inputElement.value, {
 //         method: 'HEAD',
-//       }).then(res => console.log(res.headers.get('content-type')));
+//       })
+//       .then(res => res.headers.get('content-type'))
+//       .then(res => console.log(res))
+//       .catch(err => console.log(err));
+//    
 // }

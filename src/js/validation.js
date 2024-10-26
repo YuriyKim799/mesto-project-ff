@@ -1,3 +1,5 @@
+
+
 const regexp = /^[a-zA-Zа-яА-ЯЁё \-]+$/;
 const urlPattern = /(?:https?):\/\/(\w+:?\w*)?(\S+)(:\d+)?(\/|\/([\w#!:.?+=&%!\-\/]))?/;
 
@@ -27,28 +29,21 @@ const setEventListeners = (formElement, optionsConfig) => {
       // передав ей форму и проверяемый элемент
       isValid(formElement, inputElement);
       toggleButtonState(inputList, buttonElement);
+      
     });
   });
   toggleButtonState(inputList, buttonElement);
 }; 
 
 const isValid = (formElement, inputElement) => {
-    if(inputElement.name === 'image-edit') {
-      fetch(inputElement.value, {
-        method: 'HEAD',
-        headers: {
-          "Content-type": "application/json; charset=UTF-8",
-       },
-      }).then(res => console.log(res.headers.get('content-type')));
-    }   
-  
-    if (inputElement.type === 'url') {
-      if (!urlPattern.test(inputElement.value)) {
-        showInputError(formElement, inputElement, inputElement.dataset.error);
-      }else {
-        hideInputError(formElement, inputElement);
-      }
-    } else {
+    let time;
+      if (inputElement.name === 'link') {
+        checkInputUrlValue(formElement, inputElement)
+      } 
+      if (inputElement.name === 'image-edit') {
+        clearTimeout(time);
+        time = setTimeout(checkInputlink(formElement,inputElement), 5000)
+      } else {
       if (!inputElement.validity.valid) {
         showInputError(formElement, inputElement, inputElement.validationMessage);
       } else if (!regexp.test(inputElement.value)) {
@@ -58,6 +53,34 @@ const isValid = (formElement, inputElement) => {
       }
     } 
 }; 
+
+function checkInputlink(formElement,inputElement) {
+  fetch(inputElement.value, {
+        method: 'HEAD',
+        // mode: 'no-cors'
+      })
+      .then(res => res.headers.get('content-type'))
+      .then(res => checkMimeType(res,formElement,inputElement))
+      .catch(err => console.log("заебал этот CORS", err));
+}
+
+function checkMimeType(res,formElement,inputElement) {
+  console.log(res.contains('image/'));
+  // if(res ==='image/') {
+  //   showInputError(formElement, inputElement, inputElement.dataset.error);
+  // }
+}
+
+function checkInputUrlValue(formElement, inputElement) {
+  if (!urlPattern.test(inputElement.value)) {
+    showInputError(formElement, inputElement, inputElement.dataset.error);
+  } 
+   if (!inputElement.validity.valid) {
+    showInputError(formElement, inputElement, inputElement.validationMessage);
+  } else {
+    hideInputError(formElement, inputElement);
+  }
+}
 
 const showInputError = (formElement, inputElement, errorMessage) => {
   // Находим элемент ошибки внутри самой функции
