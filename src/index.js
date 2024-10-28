@@ -1,7 +1,6 @@
 import './index.css';
 import { enableValidation,clearValidation } from './js/validation.js';
 import { createCard, likeCard, removeCard } from './js/card.js';
-// import { initialCards } from './js/cards.js';
 import { closeModal, openModal } from './js/modal.js';
 //Темплейт карточки
 export const cardTemplate = document.querySelector('#card-template').content;
@@ -39,7 +38,9 @@ const profileImgEl = document.querySelector('.profile__image');
 const popupEls = document.querySelectorAll('.popup');
 const popupCloseEls = document.querySelectorAll('.popup__close');
 
-
+const profileSaveBtn = popupProfileEditEl.querySelector('.popup__button');
+const avatarSaveBtn = popupProfileImageEditEl.querySelector('.popup__button');
+const cardsSaveBtn = popupAddCardEl.querySelector('.popup__button');
 
 const validationConfig = {
     formSelector: '.popup__form',
@@ -49,6 +50,14 @@ const validationConfig = {
     inputErrorClass: 'popup__input_type_error',
     errorClass: 'popup__error_visible'
   };
+
+const urlConfig = {
+  baseUrl: 'https://nomoreparties.co/v1/wff-cohort-25',
+  headers: {
+    authorization: '56a37d53-5082-4948-be21-caf728509b19',
+    'Content-Type': 'application/json',
+  }
+} ;
 
 profileImageEditBtnEl.addEventListener('click', ()=> {
   openModal(popupProfileImageEditEl);
@@ -80,171 +89,148 @@ popupEls.forEach(modal => {
   });
 });
 
-  //Функция показа изображения карточки
- const showImage = (event) => {
-  openModal(imagePopupEl);
-  imageEl.src = event.target.src;
-  imageEl.alt = event.target.alt;
-  imageDesc.textContent = event.target.alt;
-}
-
 function changeAvatar(evt) {
   evt.preventDefault(); //Отменяем стандартную отправку формы.
-
-  fetch('https://nomoreparties.co/v1/wff-cohort-25/users/me/avatar', {
+  avatarSaveBtn.textContent = 'Сохранение...';
+  fetch(`${urlConfig.baseUrl}/users/me/avatar`, {
     method: 'PATCH',
-    headers: {
-      authorization: '56a37d53-5082-4948-be21-caf728509b19',
-      'Content-Type': 'application/json'
-    },
+    headers: urlConfig.headers,
     body: JSON.stringify({
       avatar: imageEditInput.value,
     })
   }).then(res => {
     if(res.ok) {
+      closeModal(popupProfileImageEditEl);
       return res.json();
     } else {
       return Promise.reject(res.status);
     }
-  }).then(res => insertUserData(res)).catch(error => {
-    insertUserData({
-      name: 'Юрий',
-      about: 'Сотрудник года',
-    }), console.log(`Ошибка такая ${error}, вставили значения по умолчанию`)
-  }); // получили ответ и полученный 
-  // ответ передали в колбэк функцию рендеринга профиля на странице
-  imageEditInput.value = '';
-  closeModal(popupProfileImageEditEl);
-} 
+  }).then(res => handleChangeAvatar(res)).catch(error => {
+   console.log(`Ошибка ${error}`)
+  }); 
+};
 
-formImageProfile.addEventListener('submit', changeAvatar)
+function handleChangeAvatar(url) {
+  profileImgEl.style.backgroundImage = `url(${url.avatar})`
+}
 
-// Обработчик «отправки» формы, хотя пока
-// она никуда отправляться не будет
 function editProfileForm(evt) {
     evt.preventDefault(); //Отменяем стандартную отправку формы.
     // Делаем запрос к серверу  
-    fetch('https://nomoreparties.co/v1/wff-cohort-25/users/me', {
+    profileSaveBtn.textContent = 'Сохранение...';
+    fetch(`${urlConfig.baseUrl}/users/me`, {
       method: 'PATCH',
-      headers: {
-        authorization: '56a37d53-5082-4948-be21-caf728509b19',
-        'Content-Type': 'application/json'
-      },
+      headers: urlConfig.headers,
       body: JSON.stringify({
         name: nameInput.value,
         about: jobInput.value
       })
     }).then(res => {
       if(res.ok) {
+        closeModal(popupProfileEditEl);
         return res.json();
       } else {
         return Promise.reject(res.status);
-      }
+      } // получили ответ и полученный 
+      // ответ передали в колбэк функцию рендеринга профиля на странице
     }).then(res => insertUserData(res)).catch(error => {
       insertUserData({
         name: 'Юрий',
-        about: 'Сотрудник года',
-      }), console.log(`Ошибка такая ${error}, вставили значения по умолчанию`)
-    }); // получили ответ и полученный 
-    // ответ передали в колбэк функцию рендеринга профиля на странице
-    closeModal(popupProfileEditEl);
-}
-// Прикрепляем обработчик к форме редактирования профиля:
-// он будет следить за событием “submit” - «отправка»
-formProfile.addEventListener('submit',editProfileForm); 
-
-function addNewCard(cardObj) {
-  placesList.prepend(createCard(cardObj, 
-  removeCard, likeCard, showImage));
-}
-
-const sendCardToServer = (evt) => {
-  evt.preventDefault();
-  let cardInfo = {
-    name: cardNameEl.value,
-    link: cardImgUrlEl.value,
-  }
-   fetch('https://nomoreparties.co/v1/wff-cohort-25/cards', {
-    method: 'POST',
-    headers: {
-      authorization: '56a37d53-5082-4948-be21-caf728509b19',
-       'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(cardInfo),
-  }).then(res => {
-    if(res.ok) {
-      return res.json();
-    } else {
-      return Promise.reject(res.status);
-    }
-  }).then(res => addNewCard(res)).catch(err => {console.log(`Ошибка такая ${err}`)});
-  cardNameEl.value = '',
-  cardImgUrlEl.value = '',
-  closeModal(popupAddCardEl);
-}
-
-cardsFormElement.addEventListener('submit', sendCardToServer);
-// Вызовем функцию
-enableValidation(validationConfig); 
-
-const getCards = () => {
-  return fetch('https://nomoreparties.co/v1/wff-cohort-25/cards', {
-    headers: {
-      authorization: '56a37d53-5082-4948-be21-caf728509b19'
-    }
-  });
-}
-
-function renderCards(initialArr, showImage, accOwner) {
-  initialArr.forEach((card) => {
-    placesList.append(createCard(card, removeCard, likeCard, showImage, accOwner));
-  });
-}
-
-const getUser = () => {
-  return fetch('https://nomoreparties.co/v1/wff-cohort-25/users/me', {
-    method: 'GET',
-    headers: {
-      authorization: '56a37d53-5082-4948-be21-caf728509b19',
-    }
-  });
-}
-
-// function sendRequestData () {
-  Promise.all([getUser(),getCards()]).then((resp) => {
-    const [user, cards] = resp;
-    
-    user.json().then(userData => {
-     insertUserData(userData);
-      });
-    cards.json().then(cardsData => {
-      console.log(cardsData);
-    renderCards(cardsData, showImage)
-      });
+        about: 'Исследователь океана',
+      }), console.log(`Ошибка ${error}, вставили значения по умолчанию`)
     });
-// }
-
-// sendRequestData();
+};
 
 function insertUserData(user) {
   profileNameEl.textContent = user.name;
   profileJobEl.textContent = user.about;
   profileImgEl.style.backgroundImage = `url(${user.avatar})`
-}
+};
 
-// let time;
-// imageEditInput.addEventListener('input', (event) => {
-//   clearTimeout(time);
-//   time = setTimeout(checkInputlink, 1300)
-// })
+const sendCardToServer = (evt) => {
+  evt.preventDefault();
+  cardsSaveBtn.textContent = 'Сохранение...';
+  let cardInfo = {
+    name: cardNameEl.value,
+    link: cardImgUrlEl.value,
+  }
+   fetch(`${urlConfig.baseUrl}/cards`, {
+    method: 'POST',
+    headers: urlConfig.headers,
+    body: JSON.stringify(cardInfo),
+  }).then(res => {
+    if(res.ok) {
+      closeModal(popupAddCardEl);
+      return res.json();
+    } else {
+      return Promise.reject(res.status);
+    }
+  }).then(res => addNewCard(res)).catch(err => console.log(`Ошибка такая ${err}`));
+};
 
-// function checkInputlink() {
-//   console.log(inputElement.value);
-//   fetch(inputElement.value, {
-//         method: 'HEAD',
-//       })
-//       .then(res => res.headers.get('content-type'))
-//       .then(res => console.log(res))
-//       .catch(err => console.log(err));
-//    
-// }
+function addNewCard(cardObj) {
+  placesList.prepend(createCard(cardObj, 
+  removeCard, likeCard, showImage));
+};
+
+function renderCards(initialArr, showImage, accOwner) {
+  initialArr.forEach((card) => {
+    placesList.append(createCard(card, removeCard, likeCard, showImage, accOwner));
+  });
+};
+
+  //Функция показа изображения карточки
+  const showImage = (event) => {
+    openModal(imagePopupEl);
+    imageEl.src = event.target.src;
+    imageEl.alt = event.target.alt;
+    imageDesc.textContent = event.target.alt;
+  };
+
+// Прикрепляем обработчик к форме редактирования профиля:
+// он будет следить за событием “submit” - «отправка»
+formProfile.addEventListener('submit',editProfileForm); 
+formImageProfile.addEventListener('submit', changeAvatar);
+cardsFormElement.addEventListener('submit', sendCardToServer);
+enableValidation(validationConfig); 
+
+const getUser = () => {
+  return fetch(`${urlConfig.baseUrl}/users/me`, {
+    method: 'GET',
+    headers: urlConfig.headers
+  }).then(res => {
+    if (res.ok) {
+      return res.json();
+    }
+    // если ошибка, отклоняем промис
+    return Promise.reject(`Ошибка: ${res.status}`);
+  }).then(user => {
+    // insertUserData(user);
+    return user;
+  });
+};
+
+const getCards = () => {
+  return fetch(`${urlConfig.baseUrl}/cards`, {
+    headers: urlConfig.headers
+  }).then(res => {
+    if (res.ok) {
+      return res.json();
+    }
+    // если ошибка, отклоняем промис
+    return Promise.reject(`Ошибка: ${res.status}`);
+  }).then(cards => {
+    // renderCards(cards, showImage)
+    return cards;
+  });
+};
+
+const accountOwner = getUser();
+const mainCards = getCards();
+
+
+Promise.all([accountOwner,mainCards]).then((resp) => {
+    const [user, cards] = resp;
+     console.log(user);
+      console.log(cards);
+    });

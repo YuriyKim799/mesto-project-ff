@@ -36,14 +36,10 @@ const setEventListeners = (formElement, optionsConfig) => {
 }; 
 
 const isValid = (formElement, inputElement) => {
-    let time;
-      if (inputElement.name === 'link') {
+      if (inputElement.type === 'url') {
         checkInputUrlValue(formElement, inputElement)
       } 
-      if (inputElement.name === 'image-edit') {
-        clearTimeout(time);
-        time = setTimeout(checkInputlink(formElement,inputElement), 5000)
-      } else {
+     else {
       if (!inputElement.validity.valid) {
         showInputError(formElement, inputElement, inputElement.validationMessage);
       } else if (!regexp.test(inputElement.value)) {
@@ -54,22 +50,6 @@ const isValid = (formElement, inputElement) => {
     } 
 }; 
 
-function checkInputlink(formElement,inputElement) {
-  fetch(inputElement.value, {
-        method: 'HEAD',
-        // mode: 'no-cors'
-      })
-      .then(res => res.headers.get('content-type'))
-      .then(res => checkMimeType(res,formElement,inputElement))
-      .catch(err => console.log("заебал этот CORS", err));
-}
-
-function checkMimeType(res,formElement,inputElement) {
-  console.log(res.contains('image/'));
-  // if(res ==='image/') {
-  //   showInputError(formElement, inputElement, inputElement.dataset.error);
-  // }
-}
 
 function checkInputUrlValue(formElement, inputElement) {
   if (!urlPattern.test(inputElement.value)) {
@@ -128,13 +108,13 @@ return !inputElement.validity.valid || !regexp.test(inputElement.value) && !urlP
 export function clearValidation(formElement,validationConfig) {
   const btnEl = formElement.querySelector(validationConfig.submitButtonSelector);
   const inputList = formElement.querySelectorAll(validationConfig.inputSelector);
+  btnEl.textContent = 'Сохранить';
+  btnEl.disabled = true;
+  btnEl.classList.add('form__submit_inactive');
   inputList.forEach(inputEl => {
+    inputEl.value = "";
     if (!inputEl.validity.valid || !urlPattern.test(inputEl.value)) {
       hideInputError(formElement, inputEl);
-    }
-    if (inputEl.value === "") {
-      btnEl.disabled = true;
-      btnEl.classList.add('form__submit_inactive');
     }
   });
   
