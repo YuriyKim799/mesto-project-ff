@@ -69,14 +69,12 @@ const showInputError = (formElement, inputElement, errorMessage) => {
   errorElement.textContent = errorMessage;
 }
 
-
 const hideInputError = (formElement, inputElement) => {
   // Находим элемент ошибки
   const errorElement = formElement.querySelector(`.${inputElement.id}-error`);
   inputElement.classList.remove('form__input_type_error');
   errorElement.textContent = '';
 }; 
-
 
 // Функция принимает массив полей ввода
 // и элемент кнопки, состояние которой нужно менять
@@ -87,7 +85,6 @@ const toggleButtonState = (inputList, buttonElement) => {
         buttonElement.disabled = true;
         buttonElement.classList.add('form__submit_inactive');
   } else {
-
         // иначе сделай кнопку активной
         buttonElement.disabled = false;
         buttonElement.classList.remove('form__submit_inactive');
