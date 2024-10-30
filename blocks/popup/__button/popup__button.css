@@ -11,7 +11,7 @@
   border-radius: 2px;
   border: none;
   transition: visibility 0s, background 0.3s;
-  margin-top: 48px;
+  margin-top: 5px;
 }
 
 .popup__button:not([disabled]):hover {
@@ -19,7 +19,7 @@
   cursor: pointer;
 }
 
-.form__submit_inactive {
+.popup__button_disabled {
   background: rgba(0, 0, 0, 0.15);
 }
 

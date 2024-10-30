@@ -27,67 +27,67 @@ const setEventListeners = (formElement, optionsConfig) => {
     inputElement.addEventListener('input', () => {
       // Внутри колбэка вызовем isValid,
       // передав ей форму и проверяемый элемент
-      isValid(formElement, inputElement);
-      toggleButtonState(inputList, buttonElement);
+      isValid(formElement, inputElement, optionsConfig);
+      toggleButtonState(inputList, buttonElement,optionsConfig);
       
     });
   });
-  toggleButtonState(inputList, buttonElement);
+  toggleButtonState(inputList, buttonElement, optionsConfig);
 }; 
 
-const isValid = (formElement, inputElement) => {
+const isValid = (formElement, inputElement, optionsConfig) => {
       if (inputElement.type === 'url') {
-        checkInputUrlValue(formElement, inputElement)
+        checkInputUrlValue(formElement, inputElement, optionsConfig)
       } 
      else {
       if (!inputElement.validity.valid) {
-        showInputError(formElement, inputElement, inputElement.validationMessage);
+        showInputError(formElement, inputElement, inputElement.validationMessage, optionsConfig);
       } else if (!regexp.test(inputElement.value)) {
-        showInputError(formElement, inputElement, inputElement.dataset.error);
+        showInputError(formElement, inputElement, inputElement.dataset.error, optionsConfig);
       } else {
-        hideInputError(formElement, inputElement);
+        hideInputError(formElement, inputElement, optionsConfig);
       }
     } 
 }; 
 
 
-function checkInputUrlValue(formElement, inputElement) {
+function checkInputUrlValue(formElement, inputElement, optionsConfig) {
   if (!urlPattern.test(inputElement.value)) {
-    showInputError(formElement, inputElement, inputElement.dataset.error);
+    showInputError(formElement, inputElement, inputElement.dataset.error, optionsConfig);
   } 
    if (!inputElement.validity.valid) {
-    showInputError(formElement, inputElement, inputElement.validationMessage);
+    showInputError(formElement, inputElement, inputElement.validationMessage, optionsConfig);
   } else {
-    hideInputError(formElement, inputElement);
+    hideInputError(formElement, inputElement, optionsConfig);
   }
 }
 
-const showInputError = (formElement, inputElement, errorMessage) => {
+const showInputError = (formElement, inputElement, errorMessage, optionsConfig) => {
   // Находим элемент ошибки внутри самой функции
-  const errorElement = formElement.querySelector(`.${inputElement.id}-error`);
-  inputElement.classList.add('form__input_type_error');
+  const errorElement = formElement.querySelector(`.${inputElement.id}-${optionsConfig.errorClass}`);
+  inputElement.classList.add(optionsConfig.inputErrorClass);
   errorElement.textContent = errorMessage;
 }
 
-const hideInputError = (formElement, inputElement) => {
+const hideInputError = (formElement, inputElement, optionsConfig) => {
   // Находим элемент ошибки
-  const errorElement = formElement.querySelector(`.${inputElement.id}-error`);
-  inputElement.classList.remove('form__input_type_error');
+  const errorElement = formElement.querySelector(`.${inputElement.id}-${optionsConfig.errorClass}`);
+  inputElement.classList.remove(optionsConfig.inputErrorClass);
   errorElement.textContent = '';
 }; 
 
 // Функция принимает массив полей ввода
 // и элемент кнопки, состояние которой нужно менять
-const toggleButtonState = (inputList, buttonElement) => {
+const toggleButtonState = (inputList, buttonElement, optionsConfig) => {
   // Если есть хотя бы один невалидный инпут
   if (hasInvalidInput(inputList)) {
     // сделай кнопку неактивной
         buttonElement.disabled = true;
-        buttonElement.classList.add('form__submit_inactive');
+        buttonElement.classList.add(optionsConfig.inactiveButtonClass);
   } else {
         // иначе сделай кнопку активной
         buttonElement.disabled = false;
-        buttonElement.classList.remove('form__submit_inactive');
+        buttonElement.classList.remove(optionsConfig.inactiveButtonClass);
   }
 }; 
 
@@ -107,11 +107,11 @@ export function clearValidation(formElement,validationConfig) {
   const inputList = formElement.querySelectorAll(validationConfig.inputSelector);
   btnEl.textContent = 'Сохранить';
   btnEl.disabled = true;
-  btnEl.classList.add('form__submit_inactive');
+  btnEl.classList.add(validationConfig.inactiveButtonClass);
   inputList.forEach(inputEl => {
     inputEl.value = "";
     if (!inputEl.validity.valid || !urlPattern.test(inputEl.value)) {
-      hideInputError(formElement, inputEl);
+      hideInputError(formElement, inputEl, validationConfig);
     }
   });
   

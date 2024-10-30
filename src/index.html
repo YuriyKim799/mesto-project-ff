@@ -47,7 +47,7 @@
             <input
               type="text"
               name="name"
-              id="name-input"
+              id="input-name"
               class="popup__input popup__input_type_name"
               placeholder="Имя"
               minlength="2"
@@ -55,11 +55,13 @@
               data-error="Разрешены только латинские, кириллические буквы, знаки дефиса и пробелы"
               required
             />
-            <span class="name-input-error popup__input-error"></span>
+            <span class="span-error input-name-popup__error_visible"
+              ></span
+            >
             <input
               type="text"
               name="description"
-              id="description-input"
+              id="input-description"
               class="popup__input popup__input_type_description"
               placeholder="Занятие"
               minlength="2"
@@ -67,7 +69,9 @@
               data-error="Разрешены только латинские, кириллические буквы, знаки дефиса и пробелы"
               required
             />
-            <span class="description-input-error popup__input-error"></span>
+            <span class="span-error input-description-popup__error_visible"
+              ></span
+            >
             <button type="submit" class="button popup__button">
               Сохранить
             </button>
@@ -83,24 +87,24 @@
             <input
               type="text"
               name="place-name"
-              id="place-name-input"
+              id="input-place-name"
               class="popup__input popup__input_type_card-name"
               data-error="Разрешены только латинские, кириллические буквы, знаки дефиса и пробелы"
               placeholder="Название"
               required
             />
-            <span class="place-name-input-error popup__input-error"></span>
+            <span class="span-error input-place-name-popup__error_visible"></span>
 
             <input
               type="url"
               name="link"
-              id="link-input"
+              id="input-link"
               class="popup__input popup__input_type_url"
               data-error="Введите адрес сайта"
               placeholder="Ссылка на картинку"
               required
             />
-            <span class="link-input-error popup__input-error"></span>
+            <span class="span-error input-link-popup__error_visible"></span>
             <button type="submit" class="button popup__button">
               Сохранить
             </button>
@@ -116,13 +120,13 @@
             <input
               type="url"
               name="image-edit"
-              id="image-edit-input"
+              id="input-image-edit"
               class="popup__input popup__input_type_url"
               data-error="Введите адрес сайта"
               placeholder="Ссылка на картинку"
               required
             />
-            <span class="image-edit-input-error popup__input-error"></span>
+            <span class="span-error input-image-edit-popup__error_visible"></span>
             <button type="submit" class="button popup__button">
               Сохранить
             </button>

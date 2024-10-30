@@ -1,4 +1,6 @@
-import {cardTemplate,urlConfig} from '../index.js';
+import {cardTemplate} from '../index.js';
+
+import {urlConfig} from './api.js'
 
 //Функция создания карточки
 export const createCard = (card, removeCard, likeCard, showImage) => {

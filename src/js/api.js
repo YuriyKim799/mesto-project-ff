@@ -1,11 +1,16 @@
-import { urlConfig, handleChangeAvatar,
-  profileSaveBtn,avatarSaveBtn,cardsSaveBtn,imageEditInput, 
-  popupProfileEditEl,popupProfileImageEditEl, 
-  nameInput,jobInput,insertUserData,cardNameEl,cardImgUrlEl, popupAddCardEl,
-  addNewCard
+import {
+  imageEditInput, 
+  nameInput,jobInput
  } from '../index.js';
 
-import { closeModal } from './modal.js';  
+export const urlConfig = {
+  baseUrl: 'https://nomoreparties.co/v1/wff-cohort-25',
+  headers: {
+    authorization: '56a37d53-5082-4948-be21-caf728509b19',
+    'Content-Type': 'application/json',
+  }
+} ;
+
 
 export const getUser = () => {
   return fetch(`${urlConfig.baseUrl}/users/me`, {
@@ -19,6 +24,8 @@ export const getUser = () => {
     return Promise.reject(`Ошибка: ${res.status}`);
   }).then(user => {
     return user;
+  }).catch(error => {
+    console.log(error);
   });
 };
 
@@ -33,74 +40,41 @@ export const getCards = () => {
     return Promise.reject(`Ошибка: ${res.status}`);
   }).then(cards => {
     return cards;
+  }).catch(error => {
+    console.log(error);
   });
 };
 
-export function changeAvatar(evt) {
-  evt.preventDefault(); //Отменяем стандартную отправку формы.
-  avatarSaveBtn.textContent = 'Сохранение...';
-  fetch(`${urlConfig.baseUrl}/users/me/avatar`, {
+const getResponseData = (res) => {
+  return res.ok ? res.json() : Promise.reject(`Ошибка: ${res.status}`);
+};
+
+export function changeAvatar() {
+return fetch(`${urlConfig.baseUrl}/users/me/avatar`, {
     method: 'PATCH',
     headers: urlConfig.headers,
     body: JSON.stringify({
       avatar: imageEditInput.value,
     })
-  }).then(res => {
-    if(res.ok) {
-      closeModal(popupProfileImageEditEl);
-      return res.json();
-    } else {
-      return Promise.reject(res.status);
-    }
-  }).then(res => handleChangeAvatar(res)).catch(error => {
-   console.log(`Ошибка ${error}`)
-  }); 
+  }).then(getResponseData);
 };
 
-export function editProfileForm(evt) {
-  evt.preventDefault(); //Отменяем стандартную отправку формы.
-  // Делаем запрос к серверу  
-  profileSaveBtn.textContent = 'Сохранение...';
-  fetch(`${urlConfig.baseUrl}/users/me`, {
+export function editProfileForm() {
+return fetch(`${urlConfig.baseUrl}/users/me`, {
     method: 'PATCH',
     headers: urlConfig.headers,
     body: JSON.stringify({
       name: nameInput.value,
       about: jobInput.value
     })
-  }).then(res => {
-    if(res.ok) {
-      closeModal(popupProfileEditEl);
-      return res.json();
-    } else {
-      return Promise.reject(res.status);
-    } // получили ответ и полученный 
-    // ответ передали в колбэк функцию рендеринга профиля на странице
-  }).then(res => insertUserData(res)).catch(error => {
-    insertUserData({
-      name: 'Юрий',
-      about: 'Исследователь океана',
-    }), console.log(`Ошибка ${error}, вставили значения по умолчанию`)
-  });
+  }).then(getResponseData);
 };
 
-export const sendCardToServer = (evt) => {
-  evt.preventDefault();
-  cardsSaveBtn.textContent = 'Сохранение...';
-  let cardInfo = {
-    name: cardNameEl.value,
-    link: cardImgUrlEl.value,
-  }
-   fetch(`${urlConfig.baseUrl}/cards`, {
+export const sendCardToServer = (cardInfo) => {
+
+return fetch(`${urlConfig.baseUrl}/cards`, {
     method: 'POST',
     headers: urlConfig.headers,
     body: JSON.stringify(cardInfo),
-  }).then(res => {
-    if(res.ok) {
-      closeModal(popupAddCardEl);
-      return res.json();
-    } else {
-      return Promise.reject(res.status);
-    }
-  }).then(res => addNewCard(res)).catch(err => console.log(`Ошибка такая ${err}`));
+  }).then(getResponseData);
 };

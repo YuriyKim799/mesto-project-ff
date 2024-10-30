@@ -53,14 +53,6 @@ const validationConfig = {
     errorClass: 'popup__error_visible'
   };
 
-export const urlConfig = {
-  baseUrl: 'https://nomoreparties.co/v1/wff-cohort-25',
-  headers: {
-    authorization: '56a37d53-5082-4948-be21-caf728509b19',
-    'Content-Type': 'application/json',
-  }
-} ;
-
 profileImageEditBtnEl.addEventListener('click', ()=> {
   openModal(popupProfileImageEditEl);
   clearValidation(formImageProfile,validationConfig);
@@ -113,7 +105,6 @@ function renderCards(initialArr, showImage, accOwner) {
     placesList.append(createCard(card, removeCard, likeCard, showImage, accOwner));
   });
 };
-
   //Функция показа изображения карточки
   const showImage = (event) => {
     openModal(imagePopupEl);
@@ -122,11 +113,50 @@ function renderCards(initialArr, showImage, accOwner) {
     imageDesc.textContent = event.target.alt;
   };
 
+function changeBtnText(btn) {
+  btn.textContent = 'Сохранение...';
+}
+
 // Прикрепляем обработчик к форме редактирования профиля:
 // он будет следить за событием “submit” - «отправка»
-formProfile.addEventListener('submit',editProfileForm); 
-formImageProfile.addEventListener('submit', changeAvatar);
-cardsFormElement.addEventListener('submit', sendCardToServer);
+
+formImageProfile.addEventListener('submit', (event) => {
+  event.preventDefault()
+  changeBtnText(avatarSaveBtn);
+  changeAvatar
+  .then(res => handleChangeAvatar(res))
+  .catch(err=> {
+    console.log(`Ошибка: ${err}`);
+    }).finally(()=> closeModal(popupProfileImageEditEl));
+  });
+
+formProfile.addEventListener('submit',(event) => {
+  event.preventDefault()
+  changeBtnText(profileSaveBtn);
+  editProfileForm
+  .then(res => insertUserData(res))
+  .catch(err=> {
+    console.log(`Ошибка: ${err}`);
+    }).finally(()=> closeModal(popupProfileEditEl));
+}); 
+
+
+
+
+
+cardsFormElement.addEventListener('submit', (event) => {
+  event.preventDefault();
+  let cardInfo = {
+    name: cardNameEl.value,
+    link: cardImgUrlEl.value,
+  }
+  changeBtnText(cardsSaveBtn);
+  sendCardToServer(cardInfo)
+  .then(res => addNewCard(res))
+  .catch(err=> {
+    console.log(`Ошибка: ${err}`);
+  }).finally(()=> closeModal(popupAddCardEl));
+});
 
 enableValidation(validationConfig); 
 
