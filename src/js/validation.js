@@ -27,12 +27,12 @@ const setEventListeners = (formElement, optionsConfig) => {
     inputElement.addEventListener('input', () => {
       // Внутри колбэка вызовем isValid,
       // передав ей форму и проверяемый элемент
-      isValid(formElement, inputElement);
-      toggleButtonState(inputList, buttonElement);
+      isValid(formElement, inputElement, optionsConfig);
+      toggleButtonState(inputList, buttonElement,optionsConfig);
       
     });
   });
-  toggleButtonState(inputList, buttonElement);
+  toggleButtonState(inputList, buttonElement, optionsConfig);
 }; 
 
 // function checkTextInput(formElement, inputElement) {
@@ -66,75 +66,79 @@ const setEventListeners = (formElement, optionsConfig) => {
 // }; 
 
 const isValid = (formElement, inputElement) => {
-
-      if (!inputElement.validity.valid) {
-        showInputError(formElement, inputElement, inputElement.validationMessage);
-      } else if (!regexp.test(inputElement.value)) {
-        showInputError(formElement, inputElement, inputElement.dataset.error);
+    let time;
+      if (inputElement.name === 'link') {
+        checkInputUrlValue(formElement, inputElement)
+      } 
+      if (inputElement.name === 'image-edit') {
+        clearTimeout(time);
+        time = setTimeout(checkInputlink(formElement,inputElement), 5000)
       } else {
-        hideInputError(formElement, inputElement);
+      if (!inputElement.validity.valid) {
+        showInputError(formElement, inputElement, inputElement.validationMessage, optionsConfig);
+      } else if (!regexp.test(inputElement.value)) {
+        showInputError(formElement, inputElement, inputElement.dataset.error, optionsConfig);
+      } else {
+        hideInputError(formElement, inputElement, optionsConfig);
       }
 
 }; 
 
-// function checkInputlink(formElement,inputElement) {
-//   fetch(inputElement.value, {
-//         method: 'HEAD',
-//         // mode: 'no-cors'
-//       })
-//       .then(res => res.headers.get('content-type'))
-//       .then(res => checkMimeType(res,formElement,inputElement))
-//       .catch(err => console.log("заебал этот CORS", err));
-// }
 
-// function checkMimeType(res,formElement,inputElement) {
-//   console.log(res.contains('image/'));
-//   // if(res ==='image/') {
-//   //   showInputError(formElement, inputElement, inputElement.dataset.error);
-//   // }
-// }
+function checkInputlink(formElement,inputElement) {
+  fetch(inputElement.value, {
+        method: 'HEAD',
+        // mode: 'no-cors'
+      })
+      .then(res => res.headers.get('content-type'))
+      .then(res => checkMimeType(res,formElement,inputElement))
+      .catch(err => console.log("заебал этот CORS", err));
+}
 
-// function checkInputUrlValue(formElement, inputElement) {
-  
-//   if (!inputElement.validity.valid) {
-//     showInputError(formElement, inputElement, inputElement.dataset.error);
-//   } 
-//   else if (!urlPattern.test(inputElement.value)) {
-//     showInputError(formElement, inputElement, inputElement.validationMessage);
-//   } else {
-//     hideInputError(formElement, inputElement);
-//   }
-// }
+function checkMimeType(res,formElement,inputElement) {
+  console.log(res.contains('image/'));
+  // if(res ==='image/') {
+  //   showInputError(formElement, inputElement, inputElement.dataset.error);
+  // }
+}
 
-const showInputError = (formElement, inputElement, errorMessage) => {
+function checkInputUrlValue(formElement, inputElement) {
+  if (!urlPattern.test(inputElement.value)) {
+    showInputError(formElement, inputElement, inputElement.dataset.error);
+  } 
+   if (!inputElement.validity.valid) {
+    showInputError(formElement, inputElement, inputElement.validationMessage);
+  } else {
+    hideInputError(formElement, inputElement);
+  }
+}
+
+const showInputError = (formElement, inputElement, errorMessage, optionsConfig) => {
   // Находим элемент ошибки внутри самой функции
-  const errorElement = formElement.querySelector(`.${inputElement.id}-error`);
-  inputElement.classList.add('form__input_type_error');
+  const errorElement = formElement.querySelector(`.${inputElement.id}-${optionsConfig.errorClass}`);
+  inputElement.classList.add(optionsConfig.inputErrorClass);
   errorElement.textContent = errorMessage;
 }
 
-
-const hideInputError = (formElement, inputElement) => {
+const hideInputError = (formElement, inputElement, optionsConfig) => {
   // Находим элемент ошибки
-  const errorElement = formElement.querySelector(`.${inputElement.id}-error`);
-  inputElement.classList.remove('form__input_type_error');
+  const errorElement = formElement.querySelector(`.${inputElement.id}-${optionsConfig.errorClass}`);
+  inputElement.classList.remove(optionsConfig.inputErrorClass);
   errorElement.textContent = '';
 }; 
 
-
 // Функция принимает массив полей ввода
 // и элемент кнопки, состояние которой нужно менять
-const toggleButtonState = (inputList, buttonElement) => {
+const toggleButtonState = (inputList, buttonElement, optionsConfig) => {
   // Если есть хотя бы один невалидный инпут
   if (hasInvalidInput(inputList)) {
     // сделай кнопку неактивной
         buttonElement.disabled = true;
-        buttonElement.classList.add('form__submit_inactive');
+        buttonElement.classList.add(optionsConfig.inactiveButtonClass);
   } else {
-
         // иначе сделай кнопку активной
         buttonElement.disabled = false;
-        buttonElement.classList.remove('form__submit_inactive');
+        buttonElement.classList.remove(optionsConfig.inactiveButtonClass);
   }
 }; 
 
@@ -152,13 +156,13 @@ return !inputElement.validity.valid || !regexp.test(inputElement.value) && !urlP
 export function clearValidation(formElement,validationConfig) {
   const btnEl = formElement.querySelector(validationConfig.submitButtonSelector);
   const inputList = formElement.querySelectorAll(validationConfig.inputSelector);
+  btnEl.textContent = 'Сохранить';
+  btnEl.disabled = true;
+  btnEl.classList.add(validationConfig.inactiveButtonClass);
   inputList.forEach(inputEl => {
+    inputEl.value = "";
     if (!inputEl.validity.valid || !urlPattern.test(inputEl.value)) {
-      hideInputError(formElement, inputEl);
-    }
-    if (inputEl.value === "") {
-      btnEl.disabled = true;
-      btnEl.classList.add('form__submit_inactive');
+      hideInputError(formElement, inputEl, validationConfig);
     }
   });
   

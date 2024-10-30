@@ -1,5 +1,7 @@
 import {cardTemplate} from '../index.js';
 
+import {urlConfig} from './api.js'
+
 //Функция создания карточки
 export const createCard = (card, removeCard, likeCard, showImage) => {
   const cardElement = cardTemplate.querySelector('.card').cloneNode(true);
@@ -27,11 +29,9 @@ export const createCard = (card, removeCard, likeCard, showImage) => {
   cardElement.querySelector('.card__like-button').addEventListener('click', (e) => {
     likeCard(e, card, cardCountEl);
   });
-
   cardImgEl.addEventListener('click', showImage);
   cardImgEl.src = card.link;
   cardImgEl.alt = card.name;
- 
   return cardElement;
 }
 
@@ -39,12 +39,9 @@ export const createCard = (card, removeCard, likeCard, showImage) => {
 export const likeCard = (event, targetCard, cardCountEl) => {
   if(!event.target.classList.contains('card__like-button_is-active')) {
     event.target.classList.add('card__like-button_is-active');
-  fetch(`https://nomoreparties.co/v1/wff-cohort-25/cards/likes/${targetCard._id}`, {
+  fetch(`${urlConfig.baseUrl}/cards/likes/${targetCard._id}`, {
     method: 'PUT',
-    headers: {
-      authorization: '56a37d53-5082-4948-be21-caf728509b19',
-      "Content-type": "application/json;"
-    },
+    headers: urlConfig.headers,
   }).then( res => {
     if(res.ok) {
       return res.json();
@@ -57,12 +54,9 @@ export const likeCard = (event, targetCard, cardCountEl) => {
   });
   } else {
     event.target.classList.remove('card__like-button_is-active');
-    fetch(`https://nomoreparties.co/v1/wff-cohort-25/cards/likes/${targetCard._id}`, {
+    fetch(`${urlConfig.baseUrl}/cards/likes/${targetCard._id}`, {
       method: 'DELETE',
-      headers: {
-        authorization: '56a37d53-5082-4948-be21-caf728509b19',
-        "Content-type": "application/json;"
-      },
+      headers: urlConfig.headers,
     }).then( res => {
       if(res.ok) {
         return res.json();
@@ -71,7 +65,7 @@ export const likeCard = (event, targetCard, cardCountEl) => {
       }
     })
     .then(res => updateCardLikes(res, cardCountEl)).catch(err => {
-      console.log(`Ошибка такая ${err}`)
+      console.log(`Ошибка ${err}`)
     });
   }
 }
@@ -83,21 +77,17 @@ function updateCardLikes(card, cardCountEl) {
 //Функция удаления карточки
 export const removeCard = (cardElement, card) => {
   cardElement.remove();
-  fetch(`https://nomoreparties.co/v1/wff-cohort-25/cards/${card._id}`, {
+  fetch(`${urlConfig.baseUrl}/cards/${card._id}`, {
     method: 'DELETE',
-    headers: {
-      authorization: '56a37d53-5082-4948-be21-caf728509b19',
-      "Content-type": "application/json; charset=utf-8"
-    }
+    headers: urlConfig.headers,
   }).then( res => {
        if(res.ok) {
-        console.log(res);
          return res.json();
        } else {
          return Promise.reject(res.status);
        }
      })
      .then(res => console.log(res)).catch(err => {
-       console.log(`Ошибка такая ${err}`)
+       console.log(`Ошибка ${err}`)
      });
  }
