@@ -35,11 +35,45 @@ const setEventListeners = (formElement, optionsConfig) => {
   toggleButtonState(inputList, buttonElement, optionsConfig);
 }; 
 
-const isValid = (formElement, inputElement, optionsConfig) => {
-      if (inputElement.type === 'url') {
-        checkInputUrlValue(formElement, inputElement, optionsConfig)
+// function checkTextInput(formElement, inputElement) {
+//         if (!inputElement.validity.valid) {
+//         showInputError(formElement, inputElement, inputElement.validationMessage);
+//       } else if (!regexp.test(inputElement.value)) {
+//         showInputError(formElement, inputElement, inputElement.dataset.error);
+//       } else {
+//         hideInputError(formElement, inputElement);
+//       }
+// }
+
+// function checkUrlInput(formElement, inputElement) {
+//   if (!inputElement.validity.valid) {
+//     showInputError(formElement, inputElement, inputElement.validationMessage);
+//   } else if (!urlPattern.test(inputElement.value)) {
+//     showInputError(formElement, inputElement, inputElement.dataset.error);
+//   } else {
+//     hideInputError(formElement, inputElement);
+//   }
+// }
+
+// const isValid = (formElement, inputElement) => {
+
+//   if(inputElement.type === 'text') {
+//     checkTextInput(formElement, inputElement)
+//   } else if (inputElement.name === 'link') {
+//     checkUrlInput(formElement, inputElement)
+//   }
+
+// }; 
+
+const isValid = (formElement, inputElement) => {
+    let time;
+      if (inputElement.name === 'link') {
+        checkInputUrlValue(formElement, inputElement)
       } 
-     else {
+      if (inputElement.name === 'image-edit') {
+        clearTimeout(time);
+        time = setTimeout(checkInputlink(formElement,inputElement), 5000)
+      } else {
       if (!inputElement.validity.valid) {
         showInputError(formElement, inputElement, inputElement.validationMessage, optionsConfig);
       } else if (!regexp.test(inputElement.value)) {
@@ -47,18 +81,35 @@ const isValid = (formElement, inputElement, optionsConfig) => {
       } else {
         hideInputError(formElement, inputElement, optionsConfig);
       }
-    } 
+
 }; 
 
 
-function checkInputUrlValue(formElement, inputElement, optionsConfig) {
+function checkInputlink(formElement,inputElement) {
+  fetch(inputElement.value, {
+        method: 'HEAD',
+        // mode: 'no-cors'
+      })
+      .then(res => res.headers.get('content-type'))
+      .then(res => checkMimeType(res,formElement,inputElement))
+      .catch(err => console.log("заебал этот CORS", err));
+}
+
+function checkMimeType(res,formElement,inputElement) {
+  console.log(res.contains('image/'));
+  // if(res ==='image/') {
+  //   showInputError(formElement, inputElement, inputElement.dataset.error);
+  // }
+}
+
+function checkInputUrlValue(formElement, inputElement) {
   if (!urlPattern.test(inputElement.value)) {
-    showInputError(formElement, inputElement, inputElement.dataset.error, optionsConfig);
+    showInputError(formElement, inputElement, inputElement.dataset.error);
   } 
    if (!inputElement.validity.valid) {
-    showInputError(formElement, inputElement, inputElement.validationMessage, optionsConfig);
+    showInputError(formElement, inputElement, inputElement.validationMessage);
   } else {
-    hideInputError(formElement, inputElement, optionsConfig);
+    hideInputError(formElement, inputElement);
   }
 }
 
