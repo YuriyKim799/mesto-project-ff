@@ -83,35 +83,30 @@ popupEls.forEach(modal => {
   });
 });
 
-export function handleChangeAvatar(url) {
-  profileImgEl.style.backgroundImage = `url(${url.avatar})`
-}
-
-
-
-export function insertUserData(user) {
+function insertUserData(user) {
   profileNameEl.textContent = user.name;
   profileJobEl.textContent = user.about;
-  profileImgEl.style.backgroundImage = `url(${user.avatar})`
+  profileImgEl.style.backgroundImage = `url(${user.avatar})`;
 };
 
-export function addNewCard(cardObj) {
-  placesList.prepend(createCard(cardObj, 
-  removeCard, likeCard, showImage));
+function addNewCard(card) {
+  placesList.prepend(createCard(card, 
+  removeCard, likeCard, showImage, card.owner));
 };
 
-function renderCards(initialArr, showImage, accOwner) {
-  initialArr.forEach((card) => {
-    placesList.append(createCard(card, removeCard, likeCard, showImage, accOwner));
+function renderCards(initialCards, showImage, accOwner) {
+  initialCards.forEach((card) => {
+    placesList.append(createCard(card, removeCard, 
+      likeCard, showImage, accOwner));
   });
 };
   //Функция показа изображения карточки
-  const showImage = (event) => {
-    openModal(imagePopupEl);
-    imageEl.src = event.target.src;
-    imageEl.alt = event.target.alt;
-    imageDesc.textContent = event.target.alt;
-  };
+const showImage = (event) => {
+  openModal(imagePopupEl);
+  imageEl.src = event.target.src;
+  imageEl.alt = event.target.alt;
+  imageDesc.textContent = event.target.alt;
+};
 
 function changeBtnText(btn) {
   btn.textContent = 'Сохранение...';
@@ -119,53 +114,51 @@ function changeBtnText(btn) {
 
 // Прикрепляем обработчик к форме редактирования профиля:
 // он будет следить за событием “submit” - «отправка»
-
 formImageProfile.addEventListener('submit', (event) => {
-  event.preventDefault()
+  event.preventDefault();
   changeBtnText(avatarSaveBtn);
-  changeAvatar
-  .then(res => handleChangeAvatar(res))
+  changeAvatar({
+    avatar: imageEditInput.value,
+  })
+  .then(res => insertUserData(res))
   .catch(err=> {
     console.log(`Ошибка: ${err}`);
     }).finally(()=> closeModal(popupProfileImageEditEl));
   });
 
 formProfile.addEventListener('submit',(event) => {
-  event.preventDefault()
+  event.preventDefault();
   changeBtnText(profileSaveBtn);
-  editProfileForm
+  editProfileForm({
+    name: nameInput.value,
+    about: jobInput.value
+  })
   .then(res => insertUserData(res))
   .catch(err=> {
     console.log(`Ошибка: ${err}`);
     }).finally(()=> closeModal(popupProfileEditEl));
 }); 
 
-
-
-
-
 cardsFormElement.addEventListener('submit', (event) => {
   event.preventDefault();
-  let cardInfo = {
+  changeBtnText(cardsSaveBtn);
+  sendCardToServer({
     name: cardNameEl.value,
     link: cardImgUrlEl.value,
-  }
-  changeBtnText(cardsSaveBtn);
-  sendCardToServer(cardInfo)
+  })
   .then(res => addNewCard(res))
   .catch(err=> {
     console.log(`Ошибка: ${err}`);
   }).finally(()=> closeModal(popupAddCardEl));
 });
 
-enableValidation(validationConfig); 
-
-
 const accountOwner = getUser();
 const initialCards = getCards();
 
 Promise.all([accountOwner,initialCards]).then((resp) => {
-    const [user, cards] = resp;
-    insertUserData(user);
-    renderCards(cards, showImage);
-    });
+  const [accOwner, initialCards] = resp;
+  insertUserData(accOwner);
+  renderCards(initialCards, showImage, accOwner);
+});
+
+enableValidation(validationConfig); 
