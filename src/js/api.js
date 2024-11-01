@@ -4,43 +4,23 @@ export const urlConfig = {
     authorization: '56a37d53-5082-4948-be21-caf728509b19',
     'Content-Type': 'application/json',
   }
-} ;
+};
+
+const getResponseData = (res) => {
+  return res.ok ? res.json() : Promise.reject(`Ошибка: ${res.status}`);
+};
 
 export const getUser = () => {
   return fetch(`${urlConfig.baseUrl}/users/me`, {
     method: 'GET',
     headers: urlConfig.headers
-  }).then(res => {
-    if (res.ok) {
-      return res.json();
-    }
-    // если ошибка, отклоняем промис
-    return Promise.reject(`Ошибка: ${res.status}`);
-  }).then(user => {
-    return user;
-  }).catch(error => {
-    console.log(error);
-  });
+  }).then(getResponseData);
 };
 
 export const getCards = () => {
   return fetch(`${urlConfig.baseUrl}/cards`, {
     headers: urlConfig.headers
-  }).then(res => {
-    if (res.ok) {
-      return res.json();
-    }
-    // если ошибка, отклоняем промис
-    return Promise.reject(`Ошибка: ${res.status}`);
-  }).then(cards => {
-    return cards;
-  }).catch(error => {
-    console.log(error);
-  });
-};
-
-const getResponseData = (res) => {
-  return res.ok ? res.json() : Promise.reject(`Ошибка: ${res.status}`);
+  }).then(getResponseData);
 };
 
 export function changeAvatar(objValue) {

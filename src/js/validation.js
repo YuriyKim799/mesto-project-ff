@@ -102,7 +102,6 @@ return !inputElement.validity.valid || !regexp.test(inputElement.value) && !urlP
 export function clearValidation(formElement,validationConfig) {
   const btnEl = formElement.querySelector(validationConfig.submitButtonSelector);
   const inputList = formElement.querySelectorAll(validationConfig.inputSelector);
-  btnEl.textContent = 'Сохранить';
   btnEl.disabled = true;
   btnEl.classList.add(validationConfig.inactiveButtonClass);
   inputList.forEach(inputEl => {
