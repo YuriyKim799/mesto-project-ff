@@ -52,6 +52,7 @@
               placeholder="Имя"
               minlength="2"
               maxlength="40"
+              pattern="^[a-zA-Zа-яА-ЯЁё \-]+$"
               data-error="Разрешены только латинские, кириллические буквы, знаки дефиса и пробелы"
               required
             />
@@ -66,6 +67,7 @@
               placeholder="Занятие"
               minlength="2"
               maxlength="200"
+              pattern="^[a-zA-Zа-яА-ЯЁё \-]+$"
               data-error="Разрешены только латинские, кириллические буквы, знаки дефиса и пробелы"
               required
             />
@@ -91,6 +93,7 @@
               class="popup__input popup__input_type_card-name"
               data-error="Разрешены только латинские, кириллические буквы, знаки дефиса и пробелы"
               placeholder="Название"
+              pattern="^[a-zA-Zа-яА-ЯЁё \-]+$"
               required
             />
             <span class="span-error input-place-name-popup__error_visible"></span>
@@ -102,6 +105,7 @@
               class="popup__input popup__input_type_url"
               data-error="Введите адрес сайта"
               placeholder="Ссылка на картинку"
+              pattern="(?:https?):\/\/(\w+:?\w*)?(\S+)(:\d+)?(\/|\/([\w#!:.?+=&%!\-\/]))"
               required
             />
             <span class="span-error input-link-popup__error_visible"></span>
@@ -124,6 +128,7 @@
               class="popup__input popup__input_type_url"
               data-error="Введите адрес сайта"
               placeholder="Ссылка на картинку"
+              pattern="(?:https?):\/\/(\w+:?\w*)?(\S+)(:\d+)?(\/|\/([\w#!:.?+=&%!\-\/]))"
               required
             />
             <span class="span-error input-image-edit-popup__error_visible"></span>
