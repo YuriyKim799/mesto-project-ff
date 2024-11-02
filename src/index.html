@@ -105,8 +105,7 @@
               class="popup__input popup__input_type_url"
               data-error="Введите адрес сайта"
               placeholder="Ссылка на картинку"
-              pattern="(?:https?):\/\/(\w+:?\w*)?(\S+)(:\d+)?(\/|\/([\w#!:.?+=&%!\-\/]))"
-              required
+              pattern="(?=\w)([\w\/]+(?:.png|.jpg|.jpeg|.gif))|([.\~\-\:\w\/]+(?:.png|.jpg|.jpeg‌​|.gif))"
             />
             <span class="span-error input-link-popup__error_visible"></span>
             <button type="submit" class="button popup__button">
@@ -128,7 +127,7 @@
               class="popup__input popup__input_type_url"
               data-error="Введите адрес сайта"
               placeholder="Ссылка на картинку"
-              pattern="(?:https?):\/\/(\w+:?\w*)?(\S+)(:\d+)?(\/|\/([\w#!:.?+=&%!\-\/]))"
+              pattern="(?=\w)([\w\/]+(?:.png|.jpg|.jpeg|.gif))|([.\~\-\:\w\/]+(?:.png|.jpg|.jpeg‌​|.gif))"
               required
             />
             <span
