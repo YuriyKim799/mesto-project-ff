@@ -61,6 +61,8 @@ profileImageEditBtnEl.addEventListener('click', ()=> {
 profileEditBtnEl.addEventListener('click', ()=> {
   openModal(popupProfileEditEl);
   clearValidation(formProfile, validationConfig);
+  nameInput.value = profileNameEl.textContent;
+ jobInput.value = profileJobEl.textContent;
 });
 
 addCardBtnEl.addEventListener('click', () => {

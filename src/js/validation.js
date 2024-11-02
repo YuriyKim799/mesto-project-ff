@@ -87,9 +87,7 @@ export function clearValidation(formElement,validationConfig) {
   btnEl.classList.add(validationConfig.inactiveButtonClass);
   inputList.forEach(inputEl => {
     inputEl.value = "";
-    if (!inputEl.validity.valid || inputElement.validity.patternMismatch) {
-      hideInputError(formElement, inputEl, validationConfig);
-    }
+    hideInputError(formElement, inputEl, validationConfig);
   });
   
 }
