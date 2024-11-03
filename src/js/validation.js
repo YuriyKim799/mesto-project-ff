@@ -76,7 +76,7 @@ const hasInvalidInput = (inputList) => {
     // Если поле не валидно, колбэк вернёт true
 // Обход массива прекратится и вся функция
 // hasInvalidInput вернёт true
-return !inputElement.validity.valid || inputElement.validity.patternMismatch;
+return !inputElement.validity.valid || inputElement.value === '';
   })
 }; 
 
